@@ -1,4 +1,3 @@
-// tslint:disable-next-line: no-namespace
 export namespace Random
 {
     export function integer(bits: 8 | 16 | 24 | 32 | 40 | 48): number

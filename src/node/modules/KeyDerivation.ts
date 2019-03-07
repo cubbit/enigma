@@ -3,8 +3,16 @@ import {pbkdf2 as crypto_pbkdf2} from 'crypto';
 import {defaults} from '../../defaults';
 import {Random} from './Random';
 
-export declare namespace KeyDerivation
+export namespace KeyDerivation
 {
+    export enum HMACAlgorithm
+    {
+        SHA1 = 'sha1',
+        SHA256 = 'sha256',
+        SHA384 = 'sha384',
+        SHA512 = 'sha512'
+    }
+
     export interface PBKDF2Options
     {
         key_bytes?: number;
@@ -12,10 +20,7 @@ export declare namespace KeyDerivation
         iterations?: number;
         hmac_algorithm?: string;
     }
-}
 
-export class KeyDerivation
-{
     /**
      * Perform PBKDF2 key derivation on a message
      * @param message Message from which derive a key
@@ -27,7 +32,7 @@ export class KeyDerivation
      * | Salt length | Iterations | Salt | Derived key |
      * +-------------+------------+------+-------------+
      */
-    public static pbkdf2(message: string | Buffer, options?: KeyDerivation.PBKDF2Options): Promise<Buffer>
+    export function pbkdf2(message: string | Buffer, options?: KeyDerivation.PBKDF2Options): Promise<Buffer>
     {
         return new Promise<Buffer>((resolve, reject) =>
         {
@@ -73,7 +78,7 @@ export class KeyDerivation
      * +-------------+------------+------+-------------+
      * @param hmac_algorithm The HMAC algorithm used in the salting operation
      */
-    public static pbkdf2_verify(message: string | Buffer, salted_key: Buffer, hmac_algorithm?: string): Promise<boolean>
+    export function pbkdf2_verify(message: string | Buffer, salted_key: Buffer, hmac_algorithm?: string): Promise<boolean>
     {
         return new Promise<boolean>((resolve, reject) =>
         {
@@ -93,17 +98,5 @@ export class KeyDerivation
                 return resolve(derived.equals(key));
             });
         });
-    }
-}
-
-// tslint:disable-next-line:no-namespace
-export namespace KeyDerivation
-{
-    export enum HMACAlgorithm
-    {
-        SHA1 = 'sha1',
-        SHA256 = 'sha256',
-        SHA384 = 'sha384',
-        SHA512 = 'sha512'
     }
 }

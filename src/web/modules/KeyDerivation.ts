@@ -1,8 +1,16 @@
 import {defaults} from '../../defaults';
 import {Random} from './Random';
 
-export declare namespace KeyDerivation
+export namespace KeyDerivation
 {
+    export enum HMACAlgorithm
+    {
+        SHA1 = 'SHA-1',
+        SHA256 = 'SHA-256',
+        SHA384 = 'SHA-384',
+        SHA512 = 'SHA-512'
+    }
+
     export interface PBKDF2Options
     {
         key_bytes?: number;
@@ -10,10 +18,7 @@ export declare namespace KeyDerivation
         iterations?: number;
         hmac_algorithm?: HMACAlgorithm;
     }
-}
 
-export class KeyDerivation
-{
     /**
      * Perform PBKDF2 key derivation on a message
      * @param message Message from which derive a key
@@ -25,7 +30,7 @@ export class KeyDerivation
      * | Salt length | Iterations | Salt | Derived key |
      * +-------------+------------+------+-------------+
      */
-    public static async pbkdf2(message: string | Buffer, options?: KeyDerivation.PBKDF2Options): Promise<Buffer>
+    export async function pbkdf2(message: string | Buffer, options?: KeyDerivation.PBKDF2Options): Promise<Buffer>
     {
         const salt_bytes = (options && options.salt_bytes) || defaults.key_derivation.salt_bytes;
         const iterations = (options && options.iterations) || defaults.key_derivation.iterations;
@@ -68,7 +73,7 @@ export class KeyDerivation
      * +-------------+------------+------+-------------+
      * @param hmac_algorithm The HMAC algorithm used in the salting operation
      */
-    public static async pbkdf2_verify(message: string | Buffer, salted_key: Buffer, hmac_algorithm?: KeyDerivation.HMACAlgorithm): Promise<boolean>
+    export async function pbkdf2_verify(message: string | Buffer, salted_key: Buffer, hmac_algorithm?: KeyDerivation.HMACAlgorithm): Promise<boolean>
     {
         const salt_bytes = salted_key.readUInt32BE(0);
         const iterations = salted_key.readUInt32BE(4);
@@ -87,17 +92,5 @@ export class KeyDerivation
         const derived = Buffer.from(await self.crypto.subtle.deriveBits({name: 'PBKDF2', salt, iterations, hash: {name: hmac_algorithm}}, crypto_key, key_bits));
 
         return derived.equals(key);
-    }
-}
-
-// tslint:disable-next-line:no-namespace
-export namespace KeyDerivation
-{
-    export enum HMACAlgorithm
-    {
-        SHA1 = 'SHA-1',
-        SHA256 = 'SHA-256',
-        SHA384 = 'SHA-384',
-        SHA512 = 'SHA-512'
     }
 }
