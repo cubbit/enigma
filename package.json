@@ -1,0 +1,28 @@
+{
+  "name": "enigma",
+  "version": "1.0.0",
+  "description": "A fast, native, cryptographic engine for the web",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cubbit/enigma.git"
+  },
+  "keywords": [
+    "crypto",
+    "aes",
+    "rsa",
+    "ecc",
+    "cubbit",
+    "security",
+    "privacy"
+  ],
+  "author": "Cubbit <connect@cubbit.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cubbit/enigma/issues"
+  },
+  "homepage": "https://github.com/cubbit/enigma#readme"
+}
