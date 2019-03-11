@@ -8,6 +8,9 @@
   "scripts": {
     "build": "node-gyp rebuild",
     "build:web": "node -e \"require('./scripts/web/build.js').build()\"",
+    "lint": "tslint -c tslint.json --project tsconfig.json src/**/*.ts",
+    "pretest": "concurrently \"npm run lint\" \"tsc\"",
+    "test": "jest",
     "pack": "node -e \"require('./scripts/publish.js').pack()\""
   },
   "repository": {
