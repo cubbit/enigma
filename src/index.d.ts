@@ -110,6 +110,32 @@ declare module Enigma
         decrypt(encrypted_message: Buffer): Buffer;
         readonly keypair: RSA.Keypair;
     }
+
+    namespace Attorney
+    {
+        interface Options
+        {
+            encoding?: Encoding;
+        }
+
+        interface Contract
+        {
+            attributes: object;
+            signature: string;
+        }
+
+        enum Encoding
+        {
+            BASE64,
+            HEX
+        }
+    }
+
+    class Attorney
+    {
+        static redact(attributes: object, signer: ED25519, options?: Attorney.Options): Attorney.Contract;
+        static verify(contract: Attorney.Contract, public_key: Buffer, options?: Attorney.Options): boolean;
+    }
 }
 
 export default Enigma
