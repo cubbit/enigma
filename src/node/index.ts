@@ -6,3 +6,8 @@ export * from './modules/RSA';
 export * from './modules/AES';
 
 export * from './helpers/Attorney';
+
+export function init(): Promise<void>
+{
+    return Promise.resolve();
+}

@@ -2,6 +2,8 @@ import {Duplex, Transform} from 'stream';
 
 declare module Enigma
 {
+    function init(): Promise<void>
+
     namespace Random
     {
         function integer(bits: 8 | 16 | 24 | 32 | 40 | 48): number;
