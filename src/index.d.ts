@@ -1,3 +1,5 @@
+import {Duplex} from 'stream';
+
 declare module Enigma
 {
     namespace Random
@@ -27,6 +29,34 @@ declare module Enigma
         function pbkdf2(message: string | Buffer, options?: KeyDerivation.PBKDF2Options): Promise<Buffer>;
         function pbkdf2_verify(message: string | Buffer, salted_key: Buffer, hmac_algorithm?: string): Promise<boolean>;
     }
+
+    namespace Hash
+    {
+        interface Options
+        {
+            algorithm?: Algorithm;
+            encoding?: Encoding;
+        }
+
+        enum Algorithm
+        {
+            SHA256
+        }
+
+        enum Encoding
+        {
+            BASE64,
+            HEX
+        }
+    }
+
+    class Hash
+    {
+        static digest(message: string | Buffer, options?: Hash.Options): string;
+        static digest_file(file: string | File, options?: Hash.Options): Promise<string>;
+        static stream(algorithm?: Hash.Algorithm): Duplex;
+    }
+
     namespace ED25519
     {
         interface Keypair
