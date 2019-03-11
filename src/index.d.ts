@@ -1,4 +1,4 @@
-import {Duplex} from 'stream';
+import {Duplex, Transform} from 'stream';
 
 declare module Enigma
 {
@@ -109,6 +109,43 @@ declare module Enigma
         static encrypt(message: string | Buffer, public_key: Buffer): Buffer;
         decrypt(encrypted_message: Buffer): Buffer;
         readonly keypair: RSA.Keypair;
+    }
+
+    namespace AES
+    {
+        interface Options
+        {
+            key?: Buffer;
+            key_bits?: number;
+            algorithm?: Algorithm;
+        }
+
+        enum Algorithm
+        {
+            GCM,
+            CTR
+        }
+    }
+
+    class AES
+    {
+        constructor(options?: AES.Options);
+        static create_key(bits?: number): Buffer;
+        encrypt(message: string | Buffer, iv?: Buffer):
+        {
+            content: Buffer;
+            iv: Buffer;
+            tag?: Buffer;
+        };
+        decrypt(cipher: {
+            content: Buffer;
+            iv: Buffer;
+            tag?: Buffer;
+        }): Buffer;
+        encrypt_stream(iv: Buffer): Transform & {getAuthTag: () => Buffer};
+        decrypt_stream(iv: Buffer, tag?: Buffer): Transform & {setAuthTag: (tag: Buffer) => void};
+        readonly key: Buffer;
+        readonly algorithm: AES.Algorithm;
     }
 
     namespace Attorney
