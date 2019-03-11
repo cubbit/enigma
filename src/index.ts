@@ -1,5 +1,5 @@
 // tslint:disable: no-var-requires
-let Module: typeof Enigma;
+let Module: any;
 
 if(typeof self === 'undefined')
     Module = require('./node');

@@ -14,7 +14,7 @@
     "outDir": "build",
     "pretty": true,
     "removeComments": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "strict": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
@@ -22,5 +22,5 @@
     "target": "es6",
     "typeRoots": ["node_modules/@types"]
   },
-  "include": ["src"]
+  "exclude": ["build", "dist"]
 }
