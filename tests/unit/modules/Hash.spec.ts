@@ -31,8 +31,7 @@ describe('Hash', () =>
         expect(await Enigma.Hash.digest_file(test_path, {encoding: Enigma.Hash.Encoding.HEX})).toBe(hash_hex);
     });
 
-    // FIXME: fix test for non existing file
-    it.skip('should throw digesting a non-existing file', async () =>
+    it('should throw digesting a non-existing file', async () =>
     {
         expect.assertions(1);
         const test_file = 'cubbit_hash_file_test';

@@ -27,25 +27,25 @@ export class AESCipher extends Transform
 
         this.on('finish', () =>
         {
-            const cipher = (self as any).cubbit.AES.encrypt_finalize(this._context_offset);
+            const cipher = (self as any).enigma.AES.encrypt_finalize(this._context_offset);
             this.push(Buffer.from(cipher));
-            em_array_free((self as any).cubbit, cipher);
+            em_array_free((self as any).enigma, cipher);
 
-            const tag = (self as any).cubbit.AES.get_tag(this._context_offset);
+            const tag = (self as any).enigma.AES.get_tag(this._context_offset);
             this._tag = Buffer.from(tag);
 
-            (self as any).cubbit.AES.context_free(this._context_offset);
+            (self as any).enigma.AES.context_free(this._context_offset);
         });
     }
 
     public _transform(chunk: Buffer, _: string, callback: TransformCallback): void
     {
-        const heap_chunk = em_array_malloc((self as any).cubbit, chunk);
-        const cipher = (self as any).cubbit.AES.encrypt(this._context_offset, heap_chunk.byteOffset, chunk.length);
-        em_array_free((self as any).cubbit, heap_chunk);
+        const heap_chunk = em_array_malloc((self as any).enigma, chunk);
+        const cipher = (self as any).enigma.AES.encrypt(this._context_offset, heap_chunk.byteOffset, chunk.length);
+        em_array_free((self as any).enigma, heap_chunk);
 
         callback(undefined, Buffer.from(cipher));
-        em_array_free((self as any).cubbit, cipher);
+        em_array_free((self as any).enigma, cipher);
     }
 
     public getAuthTag(): Buffer
@@ -68,25 +68,25 @@ export class AESDecipher extends Transform
 
         this.on('finish', () =>
         {
-            const result = (self as any).cubbit.AES.decrypt_finalize(this._context_offset);
+            const result = (self as any).enigma.AES.decrypt_finalize(this._context_offset);
             if(!result.success)
                 this.emit('error', new Error('Unable to authenticate data'));
 
             this.push(Buffer.from(result.plain));
-            em_array_free((self as any).cubbit, result.plain);
+            em_array_free((self as any).enigma, result.plain);
 
-            (self as any).cubbit.AES.context_free(this._context_offset);
+            (self as any).enigma.AES.context_free(this._context_offset);
         });
     }
 
     public _transform(chunk: Buffer, _: string, callback: TransformCallback): void
     {
-        const heap_chunk = em_array_malloc((self as any).cubbit, chunk);
-        const plain = (self as any).cubbit.AES.decrypt(this._context_offset, heap_chunk.byteOffset, chunk.length);
-        em_array_free((self as any).cubbit, heap_chunk);
+        const heap_chunk = em_array_malloc((self as any).enigma, chunk);
+        const plain = (self as any).enigma.AES.decrypt(this._context_offset, heap_chunk.byteOffset, chunk.length);
+        em_array_free((self as any).enigma, heap_chunk);
 
         callback(undefined, Buffer.from(plain));
-        em_array_free((self as any).cubbit, plain);
+        em_array_free((self as any).enigma, plain);
     }
 
     public setAuthTag(tag: Buffer): void
@@ -94,9 +94,9 @@ export class AESDecipher extends Transform
         if(tag.length !== 16)
             throw new Error('Tag must be 16 bytes');
 
-        const heap_tag = em_array_malloc((self as any).cubbit, tag);
-        (self as any).cubbit.AES.set_tag(this._context_offset, heap_tag.byteOffset);
-        em_array_free((self as any).cubbit, heap_tag);
+        const heap_tag = em_array_malloc((self as any).enigma, tag);
+        (self as any).enigma.AES.set_tag(this._context_offset, heap_tag.byteOffset);
+        em_array_free((self as any).enigma, heap_tag);
     }
 }
 
@@ -160,22 +160,22 @@ export class AES
 
     public encrypt_stream(iv: Buffer): AESCipher
     {
-        const heap_key = em_array_malloc((self as any).cubbit, this._key);
-        const heap_iv = em_array_malloc((self as any).cubbit, iv);
-        const context = (self as any).cubbit.AES.encrypt_context(this._algorithm, this._key.length, heap_key.byteOffset, iv.length, heap_iv.byteOffset);
-        em_array_free((self as any).cubbit, heap_key);
-        em_array_free((self as any).cubbit, heap_iv);
+        const heap_key = em_array_malloc((self as any).enigma, this._key);
+        const heap_iv = em_array_malloc((self as any).enigma, iv);
+        const context = (self as any).enigma.AES.encrypt_context(this._algorithm, this._key.length, heap_key.byteOffset, iv.length, heap_iv.byteOffset);
+        em_array_free((self as any).enigma, heap_key);
+        em_array_free((self as any).enigma, heap_iv);
         return new AESCipher(context.byteOffset);
     }
 
     // @ts-ignore
     public decrypt_stream(iv: Buffer, tag?: Buffer): AESDecipher
     {
-        const heap_key = em_array_malloc((self as any).cubbit, this._key);
-        const heap_iv = em_array_malloc((self as any).cubbit, iv);
-        const context = (self as any).cubbit.AES.decrypt_context(this._algorithm, this._key.length, heap_key.byteOffset, iv.length, heap_iv.byteOffset);
-        em_array_free((self as any).cubbit, heap_key);
-        em_array_free((self as any).cubbit, heap_iv);
+        const heap_key = em_array_malloc((self as any).enigma, this._key);
+        const heap_iv = em_array_malloc((self as any).enigma, iv);
+        const context = (self as any).enigma.AES.decrypt_context(this._algorithm, this._key.length, heap_key.byteOffset, iv.length, heap_iv.byteOffset);
+        em_array_free((self as any).enigma, heap_key);
+        em_array_free((self as any).enigma, heap_iv);
 
         const decipher = new AESDecipher(context.byteOffset);
         if(tag)

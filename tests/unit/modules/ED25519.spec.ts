@@ -44,28 +44,6 @@ describe('ED25519', () =>
         expect(ecc.keypair).toEqual(keypair);
     });
 
-    // // NOTE: this implementation differs
-    // it('should generate a specific keypair', () =>
-    // {
-    //     const seed = Buffer.from('dcuKlYOyAS1yhBcSb17dMxcKinao6SkCKXa4QgiaYrw=', 'base64');
-    //     const private_key = Buffer.from('dcuKlYOyAS1yhBcSb17dMxcKinao6SkCKXa4QgiaYrwDEAKaawm/uxUC71zb8KVQGyLS5QOGiNsAhdLRUQf8Xg==', 'base64');
-    //     const public_key = Buffer.from('AxACmmsJv7sVAu9c2/ClUBsi0uUDhojbAIXS0VEH/F4=', 'base64');
-    //     const keypair = ED25519.create_keypair(seed);
-    //     expect(keypair.private_key).toEqual(private_key);
-    //     expect(keypair.public_key).toEqual(public_key);
-    // });
-
-    // // NOTE: this implementation differs
-    // it('should generate a specific signature', () =>
-    // {
-    //     const private_key = Buffer.from('dcuKlYOyAS1yhBcSb17dMxcKinao6SkCKXa4QgiaYrwDEAKaawm/uxUC71zb8KVQGyLS5QOGiNsAhdLRUQf8Xg==', 'base64');
-    //     const public_key = Buffer.from('AxACmmsJv7sVAu9c2/ClUBsi0uUDhojbAIXS0VEH/F4=', 'base64');
-    //     const ecc = new ED25519({keypair: {private_key, public_key}});
-    //     const message = 'To be signed';
-    //     const signature = Buffer.from('v+7bPjkSwwhwKAyoWej1ZMHsuAbC4nTzPDKfSLafd0h9ff0gr4lE76lqL5AY+x/BepIQy/SLrAPzAGJgHw27AQ==', 'base64');
-    //     expect(ecc.sign(message)).toEqual(signature);
-    // });
-
     it('should sign in the same way using string or Buffer', () =>
     {
         const message = 'To be signed';

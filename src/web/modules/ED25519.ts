@@ -40,11 +40,11 @@ export class ED25519
         if(seed.length !== 32)
             throw new Error('Seed must be 32 bytes');
 
-        const heap_seed = em_array_malloc((self as any).cubbit, seed);
-        const keypair: ED25519.Keypair = (self as any).cubbit.ED25519.create_keypair(heap_seed.byteOffset, seed.length);
+        const heap_seed = em_array_malloc((self as any).enigma, seed);
+        const keypair: ED25519.Keypair = (self as any).enigma.ED25519.create_keypair(heap_seed.byteOffset, seed.length);
         keypair.public_key = Buffer.from(keypair.public_key);
         keypair.private_key = Buffer.from(keypair.private_key);
-        em_array_free((self as any).cubbit, heap_seed);
+        em_array_free((self as any).enigma, heap_seed);
         return keypair;
     }
 
@@ -53,15 +53,15 @@ export class ED25519
         if(typeof message === 'string')
             message = Buffer.from(message, 'utf8');
 
-        const heap_signature = em_array_malloc((self as any).cubbit, signature);
-        const heap_message = em_array_malloc((self as any).cubbit, message);
-        const heap_public_key = em_array_malloc((self as any).cubbit, public_key);
+        const heap_signature = em_array_malloc((self as any).enigma, signature);
+        const heap_message = em_array_malloc((self as any).enigma, message);
+        const heap_public_key = em_array_malloc((self as any).enigma, public_key);
 
-        const result = (self as any).cubbit.ED25519.verify(heap_signature.byteOffset, heap_signature.length, heap_message.byteOffset, heap_message.length, heap_public_key.byteOffset, heap_public_key.length);
+        const result = (self as any).enigma.ED25519.verify(heap_signature.byteOffset, heap_signature.length, heap_message.byteOffset, heap_message.length, heap_public_key.byteOffset, heap_public_key.length);
 
-        em_array_free((self as any).cubbit, heap_signature);
-        em_array_free((self as any).cubbit, heap_message);
-        em_array_free((self as any).cubbit, heap_public_key);
+        em_array_free((self as any).enigma, heap_signature);
+        em_array_free((self as any).enigma, heap_message);
+        em_array_free((self as any).enigma, heap_public_key);
 
         return result;
     }
@@ -73,15 +73,15 @@ export class ED25519
         if(typeof message === 'string')
             message = Buffer.from(message, 'utf8');
 
-        const heap_message = em_array_malloc((self as any).cubbit, message);
-        const heap_public_key = em_array_malloc((self as any).cubbit, this._keypair.public_key);
-        const heap_private_key = em_array_malloc((self as any).cubbit, this._keypair.private_key);
+        const heap_message = em_array_malloc((self as any).enigma, message);
+        const heap_public_key = em_array_malloc((self as any).enigma, this._keypair.public_key);
+        const heap_private_key = em_array_malloc((self as any).enigma, this._keypair.private_key);
 
-        const signature: Buffer = (self as any).cubbit.ED25519.sign(heap_message.byteOffset, heap_message.length, heap_public_key.byteOffset, this._keypair.public_key.length, heap_private_key.byteOffset, this._keypair.private_key.length);
+        const signature: Buffer = (self as any).enigma.ED25519.sign(heap_message.byteOffset, heap_message.length, heap_public_key.byteOffset, this._keypair.public_key.length, heap_private_key.byteOffset, this._keypair.private_key.length);
 
-        em_array_free((self as any).cubbit, heap_message);
-        em_array_free((self as any).cubbit, heap_public_key);
-        em_array_free((self as any).cubbit, heap_private_key);
+        em_array_free((self as any).enigma, heap_message);
+        em_array_free((self as any).enigma, heap_public_key);
+        em_array_free((self as any).enigma, heap_private_key);
 
         return Buffer.from(signature);
     }

@@ -6,12 +6,17 @@
   "main": "index.js",
   "browser": "index.js",
   "scripts": {
-    "build": "node-gyp rebuild",
-    "build:web": "node -e \"require('./scripts/web/build.js').build()\"",
+    "install": "node -e \"require('./scripts/node/install.js').install()\"",
     "lint": "tslint -c tslint.json --project tsconfig.json src/**/*.ts",
+    "build": "node-gyp rebuild",
+    "binary:pack": "node -e \"require('./scripts/node/binary.js').pack()\"",
+    "binary:publish": "node -e \"require('./scripts/node/binary.js').publish()\"",
+    "build:web": "node -e \"require('./scripts/web/build.js').build()\"",
     "pretest": "concurrently \"npm run lint\" \"tsc\"",
-    "test": "jest",
-    "pack": "node -e \"require('./scripts/publish.js').pack()\""
+    "test": "concurrently \"npm run test:node\"",
+    "test:node": "jest --env node",
+    "pack": "node -e \"require('./scripts/publish.js').pack()\"",
+    "publish": "node -e \"require('./scripts/publish.js').publish()\""
   },
   "repository": {
     "type": "git",

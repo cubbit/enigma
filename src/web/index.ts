@@ -11,15 +11,15 @@ export function init(): Promise<void>
 {
     return new Promise<void>((resolve) =>
     {
-        if(!(self as any).cubbit)
+        if(!(self as any).enigma)
         {
-            (self as any).cubbit = {};
+            (self as any).enigma = {};
 
             const enigma = require('../wasm/enigma.js');
             const enigma_module = enigma();
             enigma_module.onRuntimeInitialized = () =>
             {
-                (self as any).cubbit = enigma_module;
+                (self as any).enigma = enigma_module;
                 resolve();
             };
         }

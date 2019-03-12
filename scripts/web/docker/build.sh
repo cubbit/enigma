@@ -16,12 +16,12 @@ export LINK=${CXX}
 make build_crypto
 cd /src
 
-emcc --bind -O3 -o /out/cubbit.js \
+emcc --bind -O3 -o /out/enigma.js \
     /bindings/ed25519.cc /bindings/aes.cc /bindings/sha256.cc \
     ed25519/src/*.c \
     openssl/libcrypto.a \
     -Ied25519/src \
     -Iopenssl/include \
     -DED25519_NO_SEED \
-    -s DEMANGLE_SUPPORT=1 -s EXPORT_NAME="cubbit" -s ALLOW_MEMORY_GROWTH=1 -s ENVIRONMENT=web -s SINGLE_FILE=1 -s MODULARIZE=1 \
+    -s DEMANGLE_SUPPORT=1 -s EXPORT_NAME="enigma" -s ALLOW_MEMORY_GROWTH=1 -s ENVIRONMENT=web -s SINGLE_FILE=1 -s MODULARIZE=1 \
     -s INLINING_LIMIT=1

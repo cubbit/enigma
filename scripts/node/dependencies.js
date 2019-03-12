@@ -36,6 +36,9 @@ const openssl_version = '1.0.2q';
 
             switch(arch)
             {
+                case 'x32':
+                    env.OPENSSL_COMPILER = 'VC-WIN32';
+                    break;
                 case 'x64':
                     env.OPENSSL_COMPILER = 'VC-WIN64A';
                     break;

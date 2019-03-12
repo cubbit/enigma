@@ -35,7 +35,11 @@ export class Hash
             stream.setEncoding(encoding);
             stream.on('error', reject);
             stream.on('finish', () => resolve(stream.read().toString()));
-            createReadStream(file).pipe(stream);
+
+            const read_stream = createReadStream(file);
+            read_stream.on('error', reject);
+
+            read_stream.pipe(stream);
         });
     }
 

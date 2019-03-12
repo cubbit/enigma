@@ -21,11 +21,11 @@ export class HashStream extends Duplex
     {
         super();
 
-        this._context = (self as any).cubbit.SHA256.context();
+        this._context = (self as any).enigma.SHA256.context();
 
         this.on('finish', () =>
         {
-            const hash = (self as any).cubbit.SHA256.finalize(this._context.byteOffset);
+            const hash = (self as any).enigma.SHA256.finalize(this._context.byteOffset);
             this.push(Buffer.from(hash));
             this._context = null;
         });
@@ -35,9 +35,9 @@ export class HashStream extends Duplex
     {
         try
         {
-            const heap_chunk = em_array_malloc((self as any).cubbit, chunk);
-            (self as any).cubbit.SHA256.update(this._context.byteOffset, heap_chunk.byteOffset, chunk.length);
-            em_array_free((self as any).cubbit, heap_chunk);
+            const heap_chunk = em_array_malloc((self as any).enigma, chunk);
+            (self as any).enigma.SHA256.update(this._context.byteOffset, heap_chunk.byteOffset, chunk.length);
+            em_array_free((self as any).enigma, heap_chunk);
             callback();
         }
         catch(error)
