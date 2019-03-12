@@ -1,0 +1,34 @@
+language: node_js
+
+node_js:
+  - "10"
+  - "11"
+
+matrix:
+  include:
+  - os: linux
+    env: CROSS=1
+  - os: osx
+  - os: windows
+
+git:
+  depth: 1
+
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install strawberryperl; fi
+
+install:
+  - npm install
+
+after_success:
+  - if [[ -n "$CROSS" && "$TRAVIS_NODE_VERSION" == "10" ]]; then TARGET_ARCH=arm64 npm run cross; fi
+  - if [[ -n "$CROSS" && "$TRAVIS_NODE_VERSION" == "10" ]]; then TARGET_ARCH=arm npm run cross; fi
+
+  - if [[ "$TRAVIS_NODE_VERSION" == "10" ]]; then npm run binary:pack && npm run binary:publish; fi
+  - if [[ -n "$CROSS" && "$TRAVIS_NODE_VERSION" == "10" ]]; then TARGET_ARCH=arm npm run binary:publish; fi
+  - if [[ -n "$CROSS" && "$TRAVIS_NODE_VERSION" == "10" ]]; then TARGET_ARCH=arm64 npm run binary:publish; fi
+
+cache: npm
+
+script:
+  - npm run test
