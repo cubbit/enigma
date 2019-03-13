@@ -205,7 +205,7 @@ const message = 'Original message';
 const salted_key = await Enigma.KeyDerivation.pbkdf2(message);
 ```
 
-## How to build the project
+## How to rebuild the bindings
 
 To build the project's bindings just run the following command after cloning the repository:
 
