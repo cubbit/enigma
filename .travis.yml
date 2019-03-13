@@ -9,6 +9,10 @@ node_js:
   - "10"
   - "8"
 
+matrix:
+  allow_failures:
+  - os: windows
+
 git:
   depth: 1
 
