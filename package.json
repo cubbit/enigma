@@ -1,6 +1,6 @@
 {
   "name": "@cubbit/enigma",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "private": true,
   "description": "A fast, native, cryptographic engine for the web",
   "main": "index.js",
@@ -12,6 +12,7 @@
     "install": "node -e \"require('./scripts/node/install.js').install()\"",
     "lint": "tslint -c tslint.json --project tsconfig.json src/**/*.ts",
     "build": "node-gyp rebuild",
+    "cross": "node -e \"require('./scripts/node/cross.js').cross()\"",
     "binary:pack": "node -e \"require('./scripts/node/binary.js').pack()\"",
     "binary:publish": "node -e \"require('./scripts/node/binary.js').publish()\"",
     "build:web": "node -e \"require('./scripts/web/build.js').build()\"",

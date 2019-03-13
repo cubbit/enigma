@@ -8,7 +8,7 @@ const module_path = path.resolve(__dirname, '../..');
 
 async function cross()
 {
-    console.log('Crosscompiling module...');
+    console.log('Crosscompiling linux module...');
 
     try
     {
@@ -33,7 +33,7 @@ async function cross()
         let result = child_process.spawnSync('docker', ['run', '--rm',
             `--volume=${module_path.replace(/\\/g, '/')}:/module`,
             '--env', `TARGET_ARCH=${arch}`,
-            container, 'bash', '/module/scripts/docker/cross.sh'], {stdio: 'inherit', cwd: module_path});
+            container, 'bash', '/module/scripts/node/docker/cross.sh'], {stdio: 'inherit', cwd: module_path});
         if(result.status)
             throw new Error(`Unable to cross module`);
 
