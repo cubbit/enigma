@@ -5,6 +5,9 @@
   "description": "A fast, native, cryptographic engine for the web",
   "main": "index.js",
   "browser": "index.js",
+  "engines" : {
+    "node": "^8 || ^9 || ^10"
+  },
   "scripts": {
     "install": "node -e \"require('./scripts/node/install.js').install()\"",
     "lint": "tslint -c tslint.json --project tsconfig.json src/**/*.ts",
