@@ -30,9 +30,11 @@ export class RSA
 {
     private _keypair: RSA.Keypair | undefined;
 
-    public async init(options?: RSA.Options): Promise<void>
+    public async init(options?: RSA.Options): Promise<RSA>
     {
         this._keypair = (options && options.keypair) || await RSA.create_keypair({size: options && options.size, exponent: options && options.exponent});
+
+        return this;
     }
 
     //#region static

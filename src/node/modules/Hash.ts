@@ -14,7 +14,7 @@ export declare namespace Hash
 
 export class Hash
 {
-    public static digest(message: string | Buffer, options?: Hash.Options): string
+    public static async digest(message: string | Buffer, options?: Hash.Options): Promise<string>
     {
         const algorithm: Hash.Algorithm = (options && options.algorithm) || Hash.Algorithm[defaults.hash.algorithm as any] as Hash.Algorithm;
         const encoding: Hash.Encoding = (options && options.encoding) || Hash.Encoding[defaults.hash.encoding as any] as Hash.Encoding;

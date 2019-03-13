@@ -54,7 +54,7 @@ declare module Enigma
 
     class Hash
     {
-        static digest(message: string | Buffer, options?: Hash.Options): string;
+        static digest(message: string | Buffer, options?: Hash.Options): Promise<string>;
         static digest_file(file: string | File, options?: Hash.Options): Promise<string>;
         static stream(algorithm?: Hash.Algorithm): Duplex;
     }
@@ -106,7 +106,7 @@ declare module Enigma
 
     class RSA
     {
-        init(options?: RSA.Options): Promise<void>;
+        init(options?: RSA.Options): Promise<RSA>;
         static create_keypair(options?: RSA.KeypairOptions): Promise<RSA.Keypair>;
         static encrypt(message: string | Buffer, public_key: Buffer): Promise<Buffer>;
         decrypt(encrypted_message: Buffer): Promise<Buffer>;
@@ -131,19 +131,18 @@ declare module Enigma
 
     class AES
     {
-        constructor(options?: AES.Options);
+        init(options?: AES.Options): Promise<AES>;
         static create_key(bits?: number): Buffer;
-        encrypt(message: string | Buffer, iv?: Buffer):
-        {
+        encrypt(message: string | Buffer, iv?: Buffer): Promise<{
             content: Buffer;
             iv: Buffer;
             tag?: Buffer;
-        };
+        }>;
         decrypt(cipher: {
             content: Buffer;
             iv: Buffer;
             tag?: Buffer;
-        }): Buffer;
+        }): Promise<Buffer>;
         encrypt_stream(iv: Buffer): Transform & {getAuthTag: () => Buffer};
         decrypt_stream(iv: Buffer, tag?: Buffer): Transform & {setAuthTag: (tag: Buffer) => void};
         readonly key: Buffer;

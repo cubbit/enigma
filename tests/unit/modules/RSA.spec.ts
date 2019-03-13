@@ -12,7 +12,6 @@ describe('RSA', () =>
     it('should generate a random keypair', async () =>
     {
         expect.assertions(2);
-
         const keypair = await Enigma.RSA.create_keypair();
         expect(keypair.private_key.toString()).toContain('-----BEGIN RSA PRIVATE KEY-----');
         expect(keypair.public_key.toString()).toContain('-----BEGIN RSA PUBLIC KEY-----');
@@ -22,7 +21,6 @@ describe('RSA', () =>
     {
         const sizes = [1024, 2048, 4096];
         expect.assertions(4 * sizes.length);
-
         for(const size of sizes)
         {
             const keypair = await Enigma.RSA.create_keypair({size});
@@ -39,7 +37,6 @@ describe('RSA', () =>
     {
         const exponents = [32769, 65537, 131073];
         expect.assertions(4 * exponents.length);
-
         for(const exponent of exponents)
         {
             const keypair = await Enigma.RSA.create_keypair({exponent});
@@ -55,7 +52,6 @@ describe('RSA', () =>
     it('should use a given size and exponent', async () =>
     {
         expect.assertions(6);
-
         const exponent = 65537;
         const size = 2048;
         const rsa = new Enigma.RSA();
@@ -73,7 +69,6 @@ describe('RSA', () =>
     it('should use a given keypair', async () =>
     {
         expect.assertions(1);
-
         const keypair = await Enigma.RSA.create_keypair();
         const rsa = new Enigma.RSA();
         await rsa.init({keypair});
@@ -83,7 +78,6 @@ describe('RSA', () =>
     it('should encrypt and decrypt correctly', async () =>
     {
         expect.assertions(4);
-
         const message = 'To be encrypted';
         const rsa_1 = new Enigma.RSA();
         await rsa_1.init();

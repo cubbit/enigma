@@ -28,11 +28,13 @@ export class RSA
 
     private _webcrypto_private_key: CryptoKey | undefined;
 
-    public async init(options?: RSA.Options): Promise<void>
+    public async init(options?: RSA.Options): Promise<RSA>
     {
         this._keypair = (options && options.keypair) || await RSA.create_keypair({size: options && options.size, exponent: options && options.exponent});
 
         this._webcrypto_private_key = await self.crypto.subtle.importKey('jwk', pem2jwk(this._keypair.private_key.toString('utf8')), {name: 'RSA-OAEP', hash: {name: 'SHA-1'}}, false, ['decrypt']);
+
+        return this;
     }
 
     //#region static

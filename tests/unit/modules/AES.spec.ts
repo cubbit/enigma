@@ -23,41 +23,49 @@ describe('AES', () =>
             expect(Enigma.AES.create_key(size).length * 8).toBe(size);
     });
 
-    it('should use a given size and algorithm', () =>
+    it('should use a given size and algorithm', async () =>
     {
+        expect.assertions(2);
         const key_bits = 128;
         const algorithm = Enigma.AES.Algorithm.CTR;
-        const aes = new Enigma.AES({key_bits, algorithm});
+        const aes = new Enigma.AES();
+        await aes.init({key_bits, algorithm});
         expect(aes.key.length * 8).toBe(key_bits);
         expect(aes.algorithm).toBe(algorithm);
     });
 
-    it('should use a given key', () =>
+    it('should use a given key', async () =>
     {
+        expect.assertions(1);
         const key = Enigma.AES.create_key();
-        const aes = new Enigma.AES({key});
+        const aes = new Enigma.AES();
+        await aes.init({key});
         expect(aes.key).toEqual(key);
     });
 
-    it('should encrypt and decrypt correctly', () =>
+    it('should encrypt and decrypt correctly', async () =>
     {
+        expect.assertions(2);
         const message = 'To be encrypted';
         const aes_1 = new Enigma.AES();
+        await aes_1.init();
         const aes_2 = new Enigma.AES();
-        const encrypted = aes_1.encrypt(message);
-        expect(aes_1.decrypt(encrypted).toString()).toBe(message);
-        expect(() => aes_2.decrypt(encrypted)).toThrowError();
+        await aes_2.init();
+        const encrypted = await aes_1.encrypt(message);
+        expect((await aes_1.decrypt(encrypted)).toString()).toBe(message);
+        await expect(aes_2.decrypt(encrypted)).rejects.toThrow();
     });
 
-    it('should encrypt and decrypt correctly with stream', (done) =>
+    it('should encrypt and decrypt correctly with stream', async (done) =>
     {
         expect.assertions(1);
-
         const message = 'To be encrypted';
         const read_stream = new Stream.Readable();
 
         const aes_1 = new Enigma.AES();
+        await aes_1.init();
         const aes_2 = new Enigma.AES();
+        await aes_2.init();
         const iv = Enigma.Random.bytes(defaults.aes.iv_bytes);
         const enc_stream = aes_1.encrypt_stream(iv);
 
@@ -116,11 +124,13 @@ describe('AES', () =>
         read_stream.push(null);
     });
 
-    it('should throw decrypting in GCM mode without tag', () =>
+    it('should throw decrypting in GCM mode without tag', async () =>
     {
+        expect.assertions(2);
         const aes = new Enigma.AES();
+        await aes.init();
         const cipher = {content: Buffer.alloc(0), iv: Buffer.alloc(0)};
-        expect(() => aes.decrypt(cipher)).toThrowError();
+        await expect(aes.decrypt(cipher)).rejects.toThrow();
         expect(() => aes.decrypt_stream(cipher.iv)).toThrowError();
     });
 });

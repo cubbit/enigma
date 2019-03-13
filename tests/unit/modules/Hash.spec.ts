@@ -15,15 +15,17 @@ describe('Hash', () =>
         await Enigma.init();
     });
 
-    it('should digest the same hash for the same message', () =>
+    it('should digest the same hash for the same message', async () =>
     {
-        expect(Enigma.Hash.digest(message)).toBe(Enigma.Hash.digest(message));
+        expect.assertions(1);
+        expect(await Enigma.Hash.digest(message)).toBe(await Enigma.Hash.digest(message));
     });
 
-    it('should digest a specific message', () =>
+    it('should digest a specific message', async () =>
     {
-        expect(Enigma.Hash.digest(message)).toBe(hash_base64);
-        expect(Enigma.Hash.digest(message, {encoding: Enigma.Hash.Encoding.HEX})).toBe(hash_hex);
+        expect.assertions(2);
+        expect(await Enigma.Hash.digest(message)).toBe(hash_base64);
+        expect(await Enigma.Hash.digest(message, {encoding: Enigma.Hash.Encoding.HEX})).toBe(hash_hex);
     });
 
     it('should digest a specific file', async () =>

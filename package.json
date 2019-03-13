@@ -1,6 +1,6 @@
 {
   "name": "@cubbit/enigma",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "description": "A fast, native, cryptographic engine for the web",
   "main": "index.js",

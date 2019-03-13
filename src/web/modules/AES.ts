@@ -102,14 +102,20 @@ export class AESDecipher extends Transform
 
 export class AES
 {
-    private _key: Buffer;
-    private _algorithm: AES.Algorithm;
+    private _key: Buffer | undefined;
+    private _algorithm: AES.Algorithm | undefined;
 
-    public constructor(options?: AES.Options)
+    private _webcrypto_key: CryptoKey | undefined;
+
+    public async init(options?: AES.Options): Promise<AES>
     {
         const key_bits = (options && options.key_bits) || defaults.aes.key_bits;
         this._key = (options && options.key) || AES.create_key(key_bits);
         this._algorithm = (options && options.algorithm) || AES.Algorithm[defaults.aes.algorithm as any] as AES.Algorithm;
+
+        this._webcrypto_key = await self.crypto.subtle.importKey('raw', this._key.buffer, this._algorithm, false, ['encrypt', 'decrypt']);
+
+        return this;
     }
 
     //#region static
@@ -123,13 +129,15 @@ export class AES
 
     public async encrypt(message: string | Buffer, iv?: Buffer): Promise<{content: Buffer; iv: Buffer; tag?: Buffer}>
     {
+        if(!this._key)
+            throw new Error('Init method must be called first');
+
         if(typeof message === 'string')
             message = Buffer.from(message, 'utf8');
         if(!iv)
             iv = Random.bytes(defaults.aes.iv_bytes);
 
-        const aes_key = await self.crypto.subtle.importKey('raw', this._key.buffer, this._algorithm, false, ['encrypt']);
-        let content = Buffer.from(await self.crypto.subtle.encrypt({name: this._algorithm, iv, counter: iv, length: defaults.aes.iv_bytes * 8, tagLength: defaults.aes.tag_bytes * 8}, aes_key, message.buffer));
+        let content = Buffer.from(await self.crypto.subtle.encrypt({name: this._algorithm!, iv, counter: iv, length: defaults.aes.iv_bytes * 8, tagLength: defaults.aes.tag_bytes * 8}, this._webcrypto_key!, message.buffer));
 
         let tag;
         if(this._algorithm === AES.Algorithm.GCM)
@@ -143,6 +151,9 @@ export class AES
 
     public async decrypt(cipher: {content: Buffer; iv: Buffer; tag?: Buffer}): Promise<Buffer>
     {
+        if(!this._key)
+            throw new Error('Init method must be called first');
+
         if(this._algorithm === AES.Algorithm.GCM && !cipher.tag)
             throw new Error(`Algorithm ${AES.Algorithm.GCM} needs an auth tag`);
 
@@ -154,15 +165,17 @@ export class AES
             encrypted.set(cipher.tag!, cipher.content.length);
         }
 
-        const aes_key = await self.crypto.subtle.importKey('raw', this._key.buffer, this._algorithm, false, ['decrypt']);
-        return Buffer.from(await self.crypto.subtle.decrypt({name: this._algorithm, iv: cipher.iv, counter: cipher.iv, length: defaults.aes.iv_bytes * 8, tagLength: defaults.aes.tag_bytes * 8}, aes_key, encrypted.buffer));
+        return Buffer.from(await self.crypto.subtle.decrypt({name: this._algorithm!, iv: cipher.iv, counter: cipher.iv, length: defaults.aes.iv_bytes * 8, tagLength: defaults.aes.tag_bytes * 8}, this._webcrypto_key!, encrypted.buffer));
     }
 
     public encrypt_stream(iv: Buffer): AESCipher
     {
+        if(!this._key)
+            throw new Error('Init method must be called first');
+
         const heap_key = em_array_malloc((self as any).enigma, this._key);
         const heap_iv = em_array_malloc((self as any).enigma, iv);
-        const context = (self as any).enigma.AES.encrypt_context(this._algorithm, this._key.length, heap_key.byteOffset, iv.length, heap_iv.byteOffset);
+        const context = (self as any).enigma.AES.encrypt_context(this._algorithm!, this._key.length, heap_key.byteOffset, iv.length, heap_iv.byteOffset);
         em_array_free((self as any).enigma, heap_key);
         em_array_free((self as any).enigma, heap_iv);
         return new AESCipher(context.byteOffset);
@@ -171,9 +184,12 @@ export class AES
     // @ts-ignore
     public decrypt_stream(iv: Buffer, tag?: Buffer): AESDecipher
     {
+        if(!this._key)
+            throw new Error('Init method must be called first');
+
         const heap_key = em_array_malloc((self as any).enigma, this._key);
         const heap_iv = em_array_malloc((self as any).enigma, iv);
-        const context = (self as any).enigma.AES.decrypt_context(this._algorithm, this._key.length, heap_key.byteOffset, iv.length, heap_iv.byteOffset);
+        const context = (self as any).enigma.AES.decrypt_context(this._algorithm!, this._key.length, heap_key.byteOffset, iv.length, heap_iv.byteOffset);
         em_array_free((self as any).enigma, heap_key);
         em_array_free((self as any).enigma, heap_iv);
 
@@ -185,14 +201,20 @@ export class AES
 
     //#region getters
 
-    public get key(): Uint8Array
+    public get key(): Buffer
     {
+        if(!this._key)
+            throw new Error('Init method must be called first');
+
         return this._key;
     }
 
     public get algorithm(): AES.Algorithm
     {
-        return this._algorithm;
+        if(!this._key)
+            throw new Error('Init method must be called first');
+
+        return this._algorithm!;
     }
 
     //#endregion
