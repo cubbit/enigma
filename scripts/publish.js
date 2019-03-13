@@ -54,7 +54,7 @@ function _npm_package()
     const package_path = path.resolve(dist_path, 'package.json');
     const package_json = JSON.parse(fs.readFileSync(path.resolve(module_path, 'package.json')).toString());
     delete package_json.private;
-    const keep_scripts = ['install'];
+    const keep_scripts = ['install', 'build'];
     const scripts = {};
     for(const script of keep_scripts)
         scripts[script] = package_json.scripts[script];
@@ -117,7 +117,7 @@ function _npm_publish()
 
     let result;
 
-    result = child_process.spawnSync('npm', ['publish'], {shell: true, stdio: 'inherit', cwd: dist_path});
+    result = child_process.spawnSync('npm', ['publish', '--access', 'public'], {shell: true, stdio: 'inherit', cwd: dist_path});
     if(result.status)
         throw new Error(`Unable to publish package`);
 

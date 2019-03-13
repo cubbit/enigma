@@ -4,11 +4,16 @@ import * as path from 'path';
 
 import Enigma from '../../../src';
 
+const message = 'To be hashed';
+const hash_base64 = 'si/Bs1S27SaG5KSW0R+Ns5wSYZUkPCQeWJN9vJxMKaA=';
+const hash_hex = 'b22fc1b354b6ed2686e4a496d11f8db39c126195243c241e58937dbc9c4c29a0';
+
 describe('Hash', () =>
 {
-    const message = 'To be hashed';
-    const hash_base64 = 'si/Bs1S27SaG5KSW0R+Ns5wSYZUkPCQeWJN9vJxMKaA=';
-    const hash_hex = 'b22fc1b354b6ed2686e4a496d11f8db39c126195243c241e58937dbc9c4c29a0';
+    beforeAll(async () =>
+    {
+        await Enigma.init();
+    });
 
     it('should digest the same hash for the same message', () =>
     {

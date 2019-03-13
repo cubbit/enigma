@@ -2,6 +2,11 @@ import Enigma from '../../../src';
 
 describe('ED25519', () =>
 {
+    beforeAll(async () =>
+    {
+        await Enigma.init();
+    });
+
     it('should generate a random seed', () =>
     {
         const seed = Enigma.ED25519.create_seed();

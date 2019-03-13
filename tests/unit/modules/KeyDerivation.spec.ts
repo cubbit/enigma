@@ -8,9 +8,10 @@ const message = 'To be derived';
 
 describe('KeyDerivation', () =>
 {
-    beforeAll(() =>
+    beforeAll(async () =>
     {
         jest.setTimeout(30000);
+        await Enigma.init();
     });
 
     it('should derive a key', async () =>

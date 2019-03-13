@@ -6,6 +6,11 @@ import {defaults} from '../../../src/defaults';
 
 describe('AES', () =>
 {
+    beforeAll(async () =>
+    {
+        await Enigma.init();
+    });
+
     it('should generate a random key', () =>
     {
         expect(Enigma.AES.create_key()).toBeDefined();
