@@ -28,21 +28,21 @@ export declare namespace RSA
 
 export class RSA
 {
-    private _keypair: RSA.Keypair;
+    private _keypair: RSA.Keypair | undefined;
 
-    public constructor(options?: RSA.Options)
+    public async init(options?: RSA.Options): Promise<void>
     {
-        this._keypair = (options && options.keypair) || RSA.create_keypair({size: options && options.size, exponent: options && options.exponent});
+        this._keypair = (options && options.keypair) || await RSA.create_keypair({size: options && options.size, exponent: options && options.exponent});
     }
 
     //#region static
 
-    public static create_keypair(options?: RSA.KeypairOptions): RSA.Keypair
+    public static async create_keypair(options?: RSA.KeypairOptions): Promise<RSA.Keypair>
     {
         return bindings.rsa_create_keypair((options && options.size) || defaults.rsa.key_bits, (options && options.exponent) || defaults.rsa.exponent);
     }
 
-    public static encrypt(message: string | Buffer, public_key: Buffer): Buffer
+    public static async encrypt(message: string | Buffer, public_key: Buffer): Promise<Buffer>
     {
         if(typeof message === 'string')
             message = Buffer.from(message, 'utf8');
@@ -52,8 +52,11 @@ export class RSA
 
     //#endregion
 
-    public decrypt(encrypted_message: Buffer): Buffer
+    public async decrypt(encrypted_message: Buffer): Promise<Buffer>
     {
+        if(!this._keypair)
+            throw new Error('Init method must be called first');
+
         return privateDecrypt({key: Buffer.concat([this._keypair.public_key, this._keypair.private_key]).toString(), padding: constants.RSA_PKCS1_OAEP_PADDING}, encrypted_message);
     }
 
@@ -61,6 +64,9 @@ export class RSA
 
     public get keypair(): RSA.Keypair
     {
+        if(!this._keypair)
+            throw new Error('Init method must be called first');
+
         return this._keypair;
     }
 

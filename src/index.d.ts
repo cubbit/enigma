@@ -106,10 +106,10 @@ declare module Enigma
 
     class RSA
     {
-        constructor(options?: RSA.Options);
-        static create_keypair(options?: RSA.KeypairOptions): RSA.Keypair;
-        static encrypt(message: string | Buffer, public_key: Buffer): Buffer;
-        decrypt(encrypted_message: Buffer): Buffer;
+        init(options?: RSA.Options): Promise<void>;
+        static create_keypair(options?: RSA.KeypairOptions): Promise<RSA.Keypair>;
+        static encrypt(message: string | Buffer, public_key: Buffer): Promise<Buffer>;
+        decrypt(encrypted_message: Buffer): Promise<Buffer>;
         readonly keypair: RSA.Keypair;
     }
 

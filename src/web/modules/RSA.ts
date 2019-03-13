@@ -26,10 +26,13 @@ export class RSA
 {
     private _keypair: RSA.Keypair | undefined;
 
+    private _webcrypto_private_key: CryptoKey | undefined;
+
     public async init(options?: RSA.Options): Promise<void>
     {
         this._keypair = (options && options.keypair) || await RSA.create_keypair({size: options && options.size, exponent: options && options.exponent});
 
+        this._webcrypto_private_key = await self.crypto.subtle.importKey('jwk', pem2jwk(this._keypair.private_key.toString('utf8')), {name: 'RSA-OAEP', hash: {name: 'SHA-1'}}, false, ['decrypt']);
     }
 
     //#region static
@@ -86,8 +89,7 @@ export class RSA
         if(!this._keypair)
             throw new Error('Init method must be called first');
 
-        const rsa_private_key = await self.crypto.subtle.importKey('jwk', pem2jwk(this._keypair.private_key.toString('utf8')), {name: 'RSA-OAEP', hash: {name: 'SHA-1'}}, false, ['decrypt']);
-        return Buffer.from(await self.crypto.subtle.decrypt({name: 'RSA-OAEP'}, rsa_private_key, encrypted_message.buffer));
+        return Buffer.from(await self.crypto.subtle.decrypt({name: 'RSA-OAEP'}, this._webcrypto_private_key!, encrypted_message.buffer));
     }
 
     //#region getters
