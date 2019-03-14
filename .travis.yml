@@ -17,10 +17,10 @@ git:
   depth: 1
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install strawberryperl; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then choco install -y strawberryperl && export "PATH=/c/Strawberry/perl/site/bin:/c/Strawberry/perl/bin:/c/Strawberry/c/bin:$PATH"; fi
 
 install:
-  - npm install
+  - npm ci
 
 after_success:
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$TRAVIS_NODE_VERSION" == "10" ]]; then TARGET_ARCH=arm64 npm run cross; fi
