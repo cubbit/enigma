@@ -5,11 +5,11 @@ A fast, native, environment-agnostic, cryptographic engine for the web
 ```ts
 import Enigma from '@cubbit/enigma';
 
-new Enigma.AES().init().then((aes: Enigma.AES) =>
+new Enigma.AES().init().then(async (aes: Enigma.AES) =>
 {
     const my_secret = 'My secret';
 
-    const cipher = aes.encrypt(my_secret);
+    const cipher = await aes.encrypt(my_secret);
     console.log(cipher);
 });
 
@@ -90,11 +90,11 @@ console.log(hash); // A591A6D40BF420404A011733CFB7B190D62C65BF0BCDA32B57B277D9AD
 ```ts
 import Enigma from '@cubbit/enigma';
 
-new Enigma.AES().init().then((aes: Enigma.AES) =>
+new Enigma.AES().init().then(async (aes: Enigma.AES) =>
 {
     const my_secret = 'My secret';
 
-    const cipher = aes.encrypt(my_secret);
+    const cipher = await aes.encrypt(my_secret);
     console.log(cipher);
 });
 
@@ -171,16 +171,16 @@ const keypair = Enigma.RSA.create_keypair();
 import Enigma from  '@cubbit/enigma';
 
 const message = 'My secret';
-new Enigma.RSA().init().then((rsa: Enigma.RSA) =>
+new Enigma.RSA().init().then(async (rsa: Enigma.RSA) =>
 {
-    const encrypted = Enigma.RSA.encrypt(message, rsa.keypair.public_key);
+    const encrypted = await Enigma.RSA.encrypt(message, rsa.keypair.public_key);
     console.log(encrypted);
 
     /*
     <Buffer 7c 01 29 9e 8e 8a 5c a0 ad 28 5a 19 b4 97 43 96 ca 49 0f 73 f9 bf 4d 27 7a 01 c7 d8 11 b5 8f c4 1e 69 c1 cc ef a2 74 03 8f 04 bc 0e 3d c2 4d 89 c4 10 ... >
     */
 
-    const decrypted = rsa.decrypt(encrypted).toString();
+    const decrypted = (await rsa.decrypt(encrypted)).toString();
     console.log(decrypted); // "My secret"
 });
 ```
@@ -202,7 +202,7 @@ const message = 'To be signed';
 const ecc = new Enigma.ED25519();
 const signature = ecc.sign(message);
 
-console.log(Enigma.ED25519.verify(message, ecc.keypair.public_key, signature)) // true
+Enigma.ED25519.verify(message, ecc.keypair.public_key, signature).then(console.log) // true
 ```
 
 ### Perform a key derivation with pbkdf2
