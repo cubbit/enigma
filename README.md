@@ -1,4 +1,4 @@
-# enigma
+# enigma [![Build Status](https://travis-ci.org/cubbit/enigma.svg?branch=master)](https://travis-ci.org/cubbit/enigma)
 
 A fast, native, environment-agnostic, cryptographic engine for the web
 
@@ -151,10 +151,12 @@ new Enigma.AES().init().then((aes: Enigma.AES) =>
 import Enigma from '@cubbit/enigma';
 
 const existing_key = /*...*/
-const aes = new Enigma.AES({key: existing_key});
+const aes = new Enigma.AES().init({key: existing_key}).then(async (aes: Enigma.AES =>
+{
+    const message = aes.decrypt(my_secret).toString();
+    console.log(message); // "My secret"
+});
 
-const message = aes.decrypt(my_secret).toString();
-console.log(message); // "My secret"
 ```
 
 ### Generate a RSA keypair
@@ -223,7 +225,8 @@ npm run build
 npm run build:web
 ```
 
-#### Prerequisites:
+### Prerequisites
+
 - [perl](http://strawberryperl.com/) required to build OpenSSL on Windows
 - [docker](https://www.docker.com/) required for the web build
 
