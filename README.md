@@ -43,7 +43,7 @@ npm install
 
 ## Node.js
 
-Before installing, [download and install Node.js](https://nodejs.org/en/download/). Node.js version 8.0 or higher is required (Node.js 11 has not be tested yet).
+Before installing, [download and install Node.js](https://nodejs.org/en/download/). Node.js version 8.0 or higher is required (Node.js 11 has not been tested yet).
 
 Enigma is supported on the following platforms.
 
@@ -66,7 +66,7 @@ Install the library by following the [Installation](#Installation) section. Then
 Enigma includes the following cryptographical utilities:
 
 - **Hashing algorithms ([SHA256](https://wikipedia.org/wiki/Secure_Hash_Algorithm))**
-- **Simmetric encryption algporithms ([AES256](https://wikipedia.org/wiki/Advanced_Encryption_Standard))**
+- **Simmetric encryption algorithms ([AES256](https://wikipedia.org/wiki/Advanced_Encryption_Standard))**
 - **Asymmetric encryption algorithms ([RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)), [ECC](https://en.wikipedia.org/wiki/Elliptic-curve_cryptography))**
 - **Misc utilities (Random, [Key derivation](https://en.wikipedia.org/wiki/Key_derivation_function) algorithms)**
 
@@ -241,7 +241,7 @@ npm test
 
 ## How to contribute
 
-Feel free to open issue or a pull request to report bugs and suggest new features. Please refer to our [Contributions guidelines](https://github.com/cubbit/enigma/blob/master/CONTRIBUTING.md) for more details about the contribution process.
+Feel free to open an issue or a pull request to report bugs and suggest new features. Please refer to our [Contributions guidelines](https://github.com/cubbit/enigma/blob/master/CONTRIBUTING.md) for more details about the contribution process.
 
 ## License
 
