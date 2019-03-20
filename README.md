@@ -216,6 +216,32 @@ const message = 'Original message';
 const salted_key = await Enigma.KeyDerivation.pbkdf2(message);
 ```
 
+### Sign javascript objects with the Attorney tool
+
+```ts
+import Enigma from '@cubbit/enigma';
+
+const object = {message: 'To be signed'};
+const ecc = new Enigma.ED25519();
+
+const contract = Enigma.Attorney.redact(object, ecc);
+const is_valid = Enigma.Attorney.verify(contract, ecc.keypair.public_key);
+
+console.log(is_valid); // true
+```
+
+### Generate Random values
+
+```ts
+import Enigma from '@cubbit/enigma';
+
+Enigma.init().then(async () =>
+{
+    const random_int4 = Enigma.Random.integer(32);
+    const random_bytes = Enigma.Random.bytes(32);
+});
+```
+
 ## How to rebuild the bindings
 
 To build the project's bindings just run the following command after cloning the repository:
