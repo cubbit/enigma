@@ -1,5 +1,4 @@
-import * as constants from 'constants';
-import {privateDecrypt, publicEncrypt} from 'crypto';
+import {privateDecrypt, publicEncrypt, constants} from 'crypto';
 
 import {defaults} from '../../defaults';
 
