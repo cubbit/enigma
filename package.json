@@ -6,7 +6,7 @@
   "main": "index.js",
   "browser": "index.js",
   "engines": {
-    "node": "^8 || ^10"
+    "node": "^8 || ^10 || ^12"
   },
   "scripts": {
     "install": "node -e \"require('./scripts/node/install.js').install()\"",
