@@ -1,5 +1,4 @@
-import * as constants from 'constants';
-import {privateDecrypt, publicEncrypt} from 'crypto';
+import {constants, privateDecrypt, publicEncrypt} from 'crypto';
 
 import {defaults} from '../../defaults';
 
@@ -49,7 +48,7 @@ export class RSA
         if(typeof message === 'string')
             message = Buffer.from(message, 'utf8');
 
-        return publicEncrypt({key: public_key.toString(), padding: constants.RSA_PKCS1_OAEP_PADDING}, message);
+        return publicEncrypt({key: public_key, padding: constants.RSA_PKCS1_OAEP_PADDING}, message);
     }
 
     //#endregion
@@ -59,7 +58,7 @@ export class RSA
         if(!this._keypair)
             throw new Error('Init method must be called first');
 
-        return privateDecrypt({key: Buffer.concat([this._keypair.public_key, this._keypair.private_key]).toString(), padding: constants.RSA_PKCS1_OAEP_PADDING}, encrypted_message);
+        return privateDecrypt({key: this._keypair.private_key, padding: constants.RSA_PKCS1_OAEP_PADDING}, encrypted_message);
     }
 
     //#region getters
