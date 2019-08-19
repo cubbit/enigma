@@ -16,10 +16,25 @@ const module_name = package_name.split('/')[1] || package_name;
 const bindings_path = path.resolve(module_path, 'build');
 const stage_path = path.resolve(module_path, 'build', 'stage');
 
+function _build()
+{
+    const result = child_process.spawnSync('npm', ['run', 'build'], {shell: true, stdio: 'inherit', cwd: module_path});
+    if(result.status)
+        return false;
+    return true;
+}
+
 function install()
 {
     return new Promise((resolve, reject) =>
     {
+        if(process.env.CI)
+        {
+            if(_build())
+                return resolve();
+            return reject(`Unable to install`);
+        }
+
         const platform = os.platform();
         const arch = os.arch();
         let runtime = process.env.npm_config_runtime === "electron" && platform === 'win32' ? 'electron' : 'node';
@@ -51,10 +66,9 @@ function install()
             }
             else
             {
-                const result = child_process.spawnSync('npm', ['run', 'build'], {shell: true, stdio: 'inherit', cwd: module_path});
-                if(result.status)
-                    return reject(`Unable to install`);
-                resolve();
+                if(_build())
+                    return resolve();
+                return reject(`Unable to install`);
             }
         });
     });

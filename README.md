@@ -1,15 +1,17 @@
-# enigma
+# enigma [![Build Status](https://travis-ci.org/cubbit/enigma.svg?branch=master)](https://travis-ci.org/cubbit/enigma)
 
 A fast, native, environment-agnostic, cryptographic engine for the web
 
 ```ts
 import Enigma from '@cubbit/enigma';
 
-const aes = new Enigma.AES();
-const my_secret = 'My secret';
+new Enigma.AES().init().then(async (aes: Enigma.AES) =>
+{
+    const my_secret = 'My secret';
 
-const cipher = aes.encrypt(my_secret);
-console.log(cipher);
+    const cipher = await aes.encrypt(my_secret);
+    console.log(cipher);
+});
 
 /*
 {
@@ -41,7 +43,7 @@ npm install
 
 ## Node.js
 
-Before installing, [download and install Node.js](https://nodejs.org/en/download/). Node.js version 8.0 or higher is required (Node.js 11 has not be tested yet).
+Before installing, [download and install Node.js](https://nodejs.org/en/download/). Node.js version 8.0 or higher is required (Node.js 11 has not been tested yet).
 
 Enigma is supported on the following platforms.
 
@@ -64,7 +66,7 @@ Install the library by following the [Installation](#Installation) section. Then
 Enigma includes the following cryptographical utilities:
 
 - **Hashing algorithms ([SHA256](https://wikipedia.org/wiki/Secure_Hash_Algorithm))**
-- **Simmetric encryption algporithms ([AES256](https://wikipedia.org/wiki/Advanced_Encryption_Standard))**
+- **Simmetric encryption algorithms ([AES256](https://wikipedia.org/wiki/Advanced_Encryption_Standard))**
 - **Asymmetric encryption algorithms ([RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)), [ECC](https://en.wikipedia.org/wiki/Elliptic-curve_cryptography))**
 - **Misc utilities (Random, [Key derivation](https://en.wikipedia.org/wiki/Key_derivation_function) algorithms)**
 
@@ -88,11 +90,13 @@ console.log(hash); // A591A6D40BF420404A011733CFB7B190D62C65BF0BCDA32B57B277D9AD
 ```ts
 import Enigma from '@cubbit/enigma';
 
-const aes = new Enigma.AES();
-const my_secret = 'My secret';
+new Enigma.AES().init().then(async (aes: Enigma.AES) =>
+{
+    const my_secret = 'My secret';
 
-const cipher = aes.encrypt(my_secret);
-console.log(cipher);
+    const cipher = await aes.encrypt(my_secret);
+    console.log(cipher);
+});
 
 /*
 {
@@ -113,13 +117,15 @@ import {createReadStream} from 'fs';
 import Enigma from '@cubbit/enigma';
 
 const file_stream = fs.createReadStream('my_secret_image.png');
-const aes = new Enigma.AES();
-const iv = Enigma.Random.bytes(16);
-const aes_stream = aes.encrypt_stream(iv);
+new Enigma.AES().init().then((aes: Enigma.AES) =>
+{
+    const iv = Enigma.Random.bytes(16);
+    const aes_stream = aes.encrypt_stream(iv);
 
-aes_stream.once('finish', () => console.log('File encrypted'));
+    aes_stream.once('finish', () => console.log('File encrypted'));
 
-file_stream.pipe(aes_stream);
+    file_stream.pipe(aes_stream);
+});
 
 // On the Web
 import Enigma from '@cubbit/enigma';
@@ -128,13 +134,15 @@ import WebFileStream from '@cubbit/web-file-stream';
 const file = new File(); // You can get this File object through an file input tag
 const file_stream = WebFileStream.create_read_stream(file);
 
-const aes = new Enigma.AES();
-const iv = Enigma.Random.bytes(16);
-const aes_stream = aes.encrypt_stream(iv);
+new Enigma.AES().init().then((aes: Enigma.AES) =>
+{
+    const iv = Enigma.Random.bytes(16);
+    const aes_stream = aes.encrypt_stream(iv);
 
-aes_stream.once('finish', () => console.log('File encrypted'));
+    aes_stream.once('finish', () => console.log('File encrypted'));
 
-file_stream.pipe(aes_stream);
+    file_stream.pipe(aes_stream);
+});
 ```
 
 ### Decrypt with AES
@@ -143,10 +151,12 @@ file_stream.pipe(aes_stream);
 import Enigma from '@cubbit/enigma';
 
 const existing_key = /*...*/
-const aes = new Enigma.AES({key: existing_key});
+const aes = new Enigma.AES().init({key: existing_key}).then(async (aes: Enigma.AES =>
+{
+    const message = aes.decrypt(my_secret).toString();
+    console.log(message); // "My secret"
+});
 
-const message = aes.decrypt(my_secret).toString();
-console.log(message); // "My secret"
 ```
 
 ### Generate a RSA keypair
@@ -163,17 +173,18 @@ const keypair = Enigma.RSA.create_keypair();
 import Enigma from  '@cubbit/enigma';
 
 const message = 'My secret';
-const rsa = new Enigma.RSA();
+new Enigma.RSA().init().then(async (rsa: Enigma.RSA) =>
+{
+    const encrypted = await Enigma.RSA.encrypt(message, rsa.keypair.public_key);
+    console.log(encrypted);
 
-const encrypted = Enigma.RSA.encrypt(message, rsa.keypair.public_key);
-console.log(encrypted);
+    /*
+    <Buffer 7c 01 29 9e 8e 8a 5c a0 ad 28 5a 19 b4 97 43 96 ca 49 0f 73 f9 bf 4d 27 7a 01 c7 d8 11 b5 8f c4 1e 69 c1 cc ef a2 74 03 8f 04 bc 0e 3d c2 4d 89 c4 10 ... >
+    */
 
-/*
-<Buffer 7c 01 29 9e 8e 8a 5c a0 ad 28 5a 19 b4 97 43 96 ca 49 0f 73 f9 bf 4d 27 7a 01 c7 d8 11 b5 8f c4 1e 69 c1 cc ef a2 74 03 8f 04 bc 0e 3d c2 4d 89 c4 10 ... >
-*/
-
-const decrypted = rsa.decrypt(encrypted).toString();
-console.log(decrypted); // "My secret"
+    const decrypted = (await rsa.decrypt(encrypted)).toString();
+    console.log(decrypted); // "My secret"
+});
 ```
 
 ### Generate a ECC keypair
@@ -193,7 +204,7 @@ const message = 'To be signed';
 const ecc = new Enigma.ED25519();
 const signature = ecc.sign(message);
 
-console.log(Enigma.ED25519.verify(message, ecc.keypair.public_key, signature)) // true
+Enigma.ED25519.verify(message, ecc.keypair.public_key, signature).then(console.log) // true
 ```
 
 ### Perform a key derivation with pbkdf2
@@ -205,13 +216,45 @@ const message = 'Original message';
 const salted_key = await Enigma.KeyDerivation.pbkdf2(message);
 ```
 
+### Sign javascript objects with the Attorney tool
+
+```ts
+import Enigma from '@cubbit/enigma';
+
+const object = {message: 'To be signed'};
+const ecc = new Enigma.ED25519();
+
+const contract = Enigma.Attorney.redact(object, ecc);
+const is_valid = Enigma.Attorney.verify(contract, ecc.keypair.public_key);
+
+console.log(is_valid); // true
+```
+
+### Generate Random values
+
+```ts
+import Enigma from '@cubbit/enigma';
+
+Enigma.init().then(async () =>
+{
+    const random_int4 = Enigma.Random.integer(32);
+    const random_bytes = Enigma.Random.bytes(32);
+});
+```
+
 ## How to rebuild the bindings
 
 To build the project's bindings just run the following command after cloning the repository:
 
 ```bash
 npm run build
+npm run build:web
 ```
+
+### Prerequisites
+
+- [perl](http://strawberryperl.com/) required to build OpenSSL on Windows
+- [docker](https://www.docker.com/) required for the web build
 
 ## How to run tests
 
@@ -224,7 +267,7 @@ npm test
 
 ## How to contribute
 
-Feel free to open issue or a pull request to report bugs and suggest new features. Please refer to our [Contributions guidelines](https://github.com/cubbit/enigma/blob/master/CONTRIBUTING.md) for more details about the contribution process.
+Feel free to open an issue or a pull request to report bugs and suggest new features. Please refer to our [Contributions guidelines](https://github.com/cubbit/enigma/blob/master/CONTRIBUTING.md) for more details about the contribution process.
 
 ## License
 
