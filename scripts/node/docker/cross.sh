@@ -8,9 +8,10 @@ export NVM_DIR="$HOME/.nvm"
 nvm install 10
 
 cd /module
-rsync -av . /src --exclude node_modules --exclude dependencies --exclude build --exclude dist --exclude coverage
+rsync -av . /src --exclude node_modules --exclude dependencies --exclude build --exclude dist --exclude coverage --exclude .git
 
 cd /src
+export CROSS_COMPILE=""
 npm_config_arch=$TARGET_ARCH npm i
 npm_config_arch=$TARGET_ARCH npm run build
 npm_config_arch=$TARGET_ARCH npm run binary:pack
