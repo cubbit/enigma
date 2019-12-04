@@ -14,9 +14,13 @@ export function init(): Promise<void>
         if(!(self as any).enigma)
         {
             (self as any).enigma = {};
+            let enigma_module: any;
 
-            const enigma = require('../wasm/enigma.js');
-            const enigma_module = enigma();
+            if(typeof document !== 'undefined')
+                enigma_module = require('../wasm/enigma.web.js')();
+            else
+                enigma_module = require('../wasm/enigma.worker.js')();
+
             enigma_module.onRuntimeInitialized = () =>
             {
                 (self as any).enigma = enigma_module;
