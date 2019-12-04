@@ -111,6 +111,7 @@ export class AES
     {
         const key_bits = (options && options.key_bits) || defaults.aes.key_bits;
         this._key = (options && options.key) || AES.create_key(key_bits);
+        // @ts-ignore
         this._algorithm = (options && options.algorithm) || AES.Algorithm[defaults.aes.algorithm as any] as AES.Algorithm;
 
         this._webcrypto_key = await self.crypto.subtle.importKey('raw', this._key.buffer, this._algorithm, false, ['encrypt', 'decrypt']);

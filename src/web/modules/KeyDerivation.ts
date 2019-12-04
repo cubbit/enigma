@@ -44,6 +44,7 @@ export namespace KeyDerivation
         const key_bytes = (options && options.key_bytes) || defaults.key_derivation.key_bytes;
         const key_bits = key_bytes * 8;
         const salt = Random.bytes(salt_bytes);
+        // @ts-ignore
         const hmac_algorithm = (options && options.hmac_algorithm) || KeyDerivation.HMACAlgorithm[defaults.key_derivation.hmac_algorithm as any] as KeyDerivation.HMACAlgorithm;
 
         if(typeof message === 'string')
@@ -81,6 +82,7 @@ export namespace KeyDerivation
         const key_bits = key_bytes * 8;
         const salt = salted_key.slice(8, salt_bytes + 8);
         if(!hmac_algorithm)
+            // @ts-ignore
             hmac_algorithm = KeyDerivation.HMACAlgorithm[defaults.key_derivation.hmac_algorithm as any] as KeyDerivation.HMACAlgorithm;
 
         if(typeof message === 'string')

@@ -37,6 +37,7 @@ export class Attorney
 
     public static redact(attributes: object, signer: ED25519, options?: Attorney.Options): Attorney.Contract
     {
+        // @ts-ignore
         const encoding: Attorney.Encoding = (options && options.encoding) || Attorney.Encoding[defaults.buffer_encoding as any] as Attorney.Encoding;
 
         const paper = this._flatten(attributes).sort();
@@ -45,6 +46,7 @@ export class Attorney
 
     public static verify(contract: Attorney.Contract, public_key: Buffer, options?: Attorney.Options): boolean
     {
+        // @ts-ignore
         const encoding: Attorney.Encoding = (options && options.encoding) || Attorney.Encoding[defaults.buffer_encoding as any] as Attorney.Encoding;
 
         const paper = this._flatten(contract.attributes).sort();

@@ -16,7 +16,9 @@ export class Hash
 {
     public static async digest(message: string | Buffer, options?: Hash.Options): Promise<string>
     {
+        // @ts-ignore
         const algorithm: Hash.Algorithm = (options && options.algorithm) || Hash.Algorithm[defaults.hash.algorithm as any] as Hash.Algorithm;
+        // @ts-ignore
         const encoding: Hash.Encoding = (options && options.encoding) || Hash.Encoding[defaults.hash.encoding as any] as Hash.Encoding;
         return createHash(algorithm).update(message).digest().toString(encoding);
     }
@@ -28,7 +30,9 @@ export class Hash
             if(typeof file !== 'string')
                 return reject('File not supported. First argument must be a path');
 
+            // @ts-ignore
             const algorithm: Hash.Algorithm = (options && options.algorithm) || Hash.Algorithm[defaults.hash.algorithm as any] as Hash.Algorithm;
+            // @ts-ignore
             const encoding = (options && options.encoding) || Hash.Encoding[defaults.hash.encoding as any] as Hash.Encoding;
 
             const stream = createHash(algorithm);
@@ -43,6 +47,7 @@ export class Hash
         });
     }
 
+    // @ts-ignore
     public static stream(algorithm: Hash.Algorithm = Hash.Algorithm[defaults.hash.algorithm as any] as Hash.Algorithm): CryptoHash
     {
         return createHash(algorithm);
