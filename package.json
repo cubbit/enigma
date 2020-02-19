@@ -18,7 +18,7 @@
     "build:web": "node -e \"require('./scripts/web/build.js').build()\"",
     "pretest": "concurrently \"npm run lint\" \"tsc\"",
     "test": "concurrently \"npm run test:node\"",
-    "test:node": "jest --env node",
+    "test:node": "jest --env node tests/unit/modules/DiffieHellman.spec.ts",
     "pack": "node -e \"require('./scripts/publish.js').pack()\"",
     "publish": "node -e \"require('./scripts/publish.js').publish()\""
   },

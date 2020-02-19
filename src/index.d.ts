@@ -55,6 +55,7 @@ declare module Enigma
     class Hash
     {
         static digest(message: string | Buffer, options?: Hash.Options): Promise<string>;
+        static digest_buffer(message: string | Buffer, options?: Hash.Options): Promise<Buffer>;
         static digest_file(file: string | File, options?: Hash.Options): Promise<string>;
         static stream(algorithm?: Hash.Algorithm): Duplex;
     }
@@ -82,6 +83,19 @@ declare module Enigma
         static verify(message: string | Buffer, public_key: Buffer, signature: Buffer): boolean;
         sign(message: string | Buffer): Buffer;
         readonly keypair: ED25519.Keypair;
+    }
+
+    namespace DiffieHellman
+    {
+
+    }
+    
+    class DiffieHellman
+    {
+        constructor();
+        public initialize(): void;
+        public get_public_key(): Buffer;
+        public derive_secret(peer_public_key: Buffer): Promise<Buffer>;
     }
 
     namespace RSA

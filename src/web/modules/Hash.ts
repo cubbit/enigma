@@ -63,6 +63,17 @@ export class Hash
 
         return Buffer.from(await self.crypto.subtle.digest({name: algorithm}, message)).toString(encoding);
     }
+    
+    public static async digest_buffer(message: string | Buffer, options?: Hash.Options): Promise<Buffer>
+    {
+        // @ts-ignore
+        const algorithm: Hash.Algorithm = (options && options.algorithm) || Hash.Algorithm[defaults.hash.algorithm as any] as Hash.Algorithm;
+        // @ts-ignore
+        if(typeof message === 'string')
+            message = Buffer.from(message, 'utf8');
+
+        return Buffer.from(await self.crypto.subtle.digest({name: algorithm}, message));
+    }
 
     public static async digest_file(file: string | File, options?: Hash.Options): Promise<string>
     {
