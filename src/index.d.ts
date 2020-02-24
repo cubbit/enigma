@@ -2,7 +2,11 @@ import {Duplex, Transform} from 'stream';
 
 declare module Enigma
 {
-    function init(): Promise<void>
+
+    class Factory
+    {
+        static init(path?: string): Promise<void>;
+    }
 
     namespace Random
     {

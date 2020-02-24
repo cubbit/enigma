@@ -8,25 +8,25 @@ export * from './modules/DiffieHellman';
 
 export * from './helpers/Attorney';
 
-export function init(): Promise<void>
+export function init(_path: string = '../wasm/'): Promise<void>
 {
     return new Promise<void>((resolve) =>
     {
-        if(!(self as any).enigma)
+        if((self as any).enigma)
+            return resolve();
+
+        (self as any).enigma = {};
+        let enigma_module: any;
+        
+        if(typeof document !== 'undefined')
+            enigma_module = require('../wasm/enigma.web.js')();
+        else
+            enigma_module = require('../wasm/enigma.worker.js')();
+
+        enigma_module.onRuntimeInitialized = () =>
         {
-            (self as any).enigma = {};
-            let enigma_module: any;
-
-            if(typeof document !== 'undefined')
-                enigma_module = require('../wasm/enigma.web.js')();
-            else
-                enigma_module = require('../wasm/enigma.worker.js')();
-
-            enigma_module.onRuntimeInitialized = () =>
-            {
-                (self as any).enigma = enigma_module;
-                resolve();
-            };
-        }
+            (self as any).enigma = enigma_module;
+            resolve();
+        };
     });
 }

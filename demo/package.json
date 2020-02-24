@@ -9,20 +9,8 @@
     "node": "^8 || ^10 || ^12"
   },
   "scripts": {
-    "build:demo": "webpack --config demo/config/webpack.config.ts --progress",
-    "dev:demo": "NODE_ENV='development' webpack-dev-server --config demo/config/webpack.config.ts --progress",
-    "install": "node -e \"require('./scripts/node/install.js').install()\"",
-    "lint": "tslint -c tslint.json --project tsconfig.json src/**/*.ts",
-    "build": "node-gyp rebuild",
-    "cross": "node -e \"require('./scripts/node/cross.js').cross()\"",
-    "binary:pack": "node -e \"require('./scripts/node/binary.js').pack()\"",
-    "binary:publish": "node -e \"require('./scripts/node/binary.js').publish()\"",
-    "build:web": "node -e \"require('./scripts/web/build.js').build()\"",
-    "pretest": "concurrently \"npm run lint\" \"tsc\"",
-    "test": "concurrently \"npm run test:node\"",
-    "test:web": "jest --env node tests/unit/modules/DiffieHellman.spec.ts",
-    "pack": "node -e \"require('./scripts/publish.js').pack()\"",
-    "publish": "node -e \"require('./scripts/publish.js').publish()\""
+    "build": "webpack --config ./config/webpack.config.ts --progress",
+    "server": "NODE_ENV='development' webpack-dev-server --config ./config/webpack.config.ts --progress"
   },
   "repository": {
     "type": "git",
@@ -45,6 +33,8 @@
   "homepage": "https://github.com/cubbit/enigma#readme",
   "dependencies": {
     "@cubbit/web-file-stream": "^1.0.0",
+    "@cubbit/enigma": "1.0.2",
+    "@types/copy-webpack-plugin": "^5.0.0",
     "bindings": "^1.4.0",
     "fs-extra": "^8.1.0",
     "node-addon-api": "^2.0.0",
@@ -64,6 +54,8 @@
     "@types/webpack-node-externals": "^1.7.0",
     "aws-sdk": "^2.584.0",
     "concurrently": "^5.0.0",
+    "copy-webpack-plugin": "^5.1.1",
+    "file-loader": "^5.1.0",
     "glob": "^7.1.6",
     "jest": "^24.9.0",
     "rimraf": "^3.0.0",
@@ -79,6 +71,7 @@
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0",
     "webpack-manifest-plugin": "^2.2.0",
-    "webpack-merge": "^4.2.2"
+    "webpack-merge": "^4.2.2",
+    "write-file-webpack-plugin": "^4.5.1"
   }
 }

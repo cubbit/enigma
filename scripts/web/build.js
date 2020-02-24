@@ -15,7 +15,9 @@ async function build()
     try
     {
         const build_path = path.resolve(module_path, 'build', 'wasm');
+        const deps_path = path.resolve(module_path, 'deps');
         fs.ensureDirSync(build_path);
+        fs.ensureDirSync(deps_path);
 
         const bindings_path = path.resolve(module_path, 'bindings/web');
         const scripts_path = path.resolve(__dirname, 'docker');
@@ -24,6 +26,7 @@ async function build()
             `--volume=${scripts_path.replace(/\\/g, '/')}:/scripts`,
             `--volume=${build_path.replace(/\\/g, '/')}:/out`,
             `--volume=${bindings_path.replace(/\\/g, '/')}:/bindings`,
+            `--volume=${deps_path.replace(/\\/g, '/')}:/deps`,
             '--env', `OPENSSL_VERSION=${openssl_version}`,
             'trzeci/emscripten', 'bash', '/scripts/build.sh'], {stdio: 'inherit', cwd: module_path});
         if(result.status)

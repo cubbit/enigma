@@ -13,8 +13,10 @@ export class DiffieHellman
     {
         const private_key: Buffer = (self as any).enigma.DiffieHellman.generate_private_key();
 
-        if(!private_key)
+        if(private_key.byteLength === 0)
             throw new Error('Impossible to generate private key');
+
+        this._private_key = Buffer.from(private_key);
     }
 
     public get_public_key(): Buffer
@@ -27,7 +29,9 @@ export class DiffieHellman
         if(!heap_private_key)
             throw new Error('Private key undefined');
 
-        const public_key: Buffer = (self as any).enigma.DiffieHellman.get_public_key(heap_private_key.byteOffset, heap_private_key.byteLength);
+        const public_key: Buffer = (self as any).enigma.DiffieHellman.get_public_key(heap_private_key.byteOffset);
+
+        console.log(public_key);
 
         em_array_free((self as any).enigma, heap_private_key);
 
@@ -46,7 +50,7 @@ export class DiffieHellman
 
         const heap_peer_public_key = em_array_malloc((self as any).enigma, peer_public_key);
 
-        const secret: Buffer = (self as any).enigma.DiffieHellman.derive_secret(heap_private_key.byteOffset, heap_private_key.byteLength, heap_peer_public_key.byteOffset, heap_peer_public_key.byteLength);
+        const secret: Buffer = (self as any).enigma.DiffieHellman.derive_secret(heap_private_key.byteOffset, heap_peer_public_key.byteOffset, heap_peer_public_key.byteLength);
 
         em_array_free((self as any).enigma, heap_private_key);
         em_array_free((self as any).enigma, heap_peer_public_key);

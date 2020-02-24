@@ -2,22 +2,26 @@ import Enigma from '../../../src';
 
 describe('DiffieHellman', () =>
 {
+    let enigma: any;
+
     beforeAll(async () =>
     {
-        await Enigma.init();
+        await Enigma.Factory.init('../../build/wasm/');
+        enigma = Enigma.Factory.module;
+        console.log(enigma);
     });
 
-    it('should initialize without throwing', () =>
+    it.only('should initialize without throwing', () =>
     {
-        const dh = new Enigma.DiffieHellman();
+        const dh = new enigma.DiffieHellman();
 
         expect(() => dh.initialize()).not.toThrow();
     });
 
     it('should return public key', async () =>
     {
-        const dh1 = new Enigma.DiffieHellman();
-        const dh2 = new Enigma.DiffieHellman();
+        const dh1 = new enigma.DiffieHellman();
+        const dh2 = new enigma.DiffieHellman();
 
         dh1.initialize();
         dh2.initialize();
@@ -29,8 +33,8 @@ describe('DiffieHellman', () =>
 
     it('should derive secrete', async () =>
     {
-        const dh1 = new Enigma.DiffieHellman();
-        const dh2 = new Enigma.DiffieHellman();
+        const dh1 = new enigma.DiffieHellman();
+        const dh2 = new enigma.DiffieHellman();
 
         dh1.initialize();
         dh2.initialize();

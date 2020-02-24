@@ -247,3 +247,4 @@ $RECYCLE.BIN/
 build/
 dist/
 dependencies/
+deps/
