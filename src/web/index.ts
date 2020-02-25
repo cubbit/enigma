@@ -12,6 +12,8 @@ export function init(_path: string = '../wasm/'): Promise<void>
 {
     return new Promise<void>((resolve) =>
     {
+        console.log((self as any).enigma);
+        
         if((self as any).enigma)
             return resolve();
 
@@ -27,6 +29,25 @@ export function init(_path: string = '../wasm/'): Promise<void>
         {
             (self as any).enigma = enigma_module;
             resolve();
+        };
+    });
+}
+
+export function init2(_path: string = '../wasm/'): Promise<any>
+{
+    return new Promise<any>((resolve) =>
+    {
+        let enigma_module: any;
+        
+        if(typeof document !== 'undefined')
+            enigma_module = require('../wasm/enigma.web.js')();
+        else
+            enigma_module = require('../wasm/enigma.worker.js')();
+
+        enigma_module.onRuntimeInitialized = () =>
+        {
+            (self as any).enigma = enigma_module;
+            resolve(enigma_module);
         };
     });
 }

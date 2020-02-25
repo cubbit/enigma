@@ -1,5 +1,8 @@
 set -e
 
+emsdk install latest-upstream
+emsdk activate latest-upstream
+
 cd /deps
 if [[ ! -d openssl ]]; then
     git clone -b master --single-branch --depth 1 https://github.com/orlp/ed25519 ed25519
@@ -26,7 +29,14 @@ emcc --bind -O3 -o /out/enigma.web.js \
     -I/deps/ed25519/src \
     -I/deps/openssl/include \
     -DED25519_NO_SEED \
-    -s DEMANGLE_SUPPORT=1 -s EXPORT_NAME="enigma" -s ALLOW_MEMORY_GROWTH=1 -s ENVIRONMENT=web -s SINGLE_FILE=1 -s MODULARIZE=1 \
+    -s DEMANGLE_SUPPORT=1 \
+    -s EXPORT_NAME="enigma" \
+    -s ALLOW_MEMORY_GROWTH=1 \
+    -s ENVIRONMENT=web \
+    -s SINGLE_FILE=1 \
+    -s MODULARIZE=1 \
+    -s ASSERTIONS=1 \
+    -fsanitize=undefined \
     -s INLINING_LIMIT=1
 
 emcc --bind -O3 -o /out/enigma.worker.js \
@@ -36,5 +46,6 @@ emcc --bind -O3 -o /out/enigma.worker.js \
     -I/deps/ed25519/src \
     -I/deps/openssl/include \
     -DED25519_NO_SEED \
-    -s DEMANGLE_SUPPORT=1 -s EXPORT_NAME="enigma" -s ALLOW_MEMORY_GROWTH=1 -s ENVIRONMENT=worker -s SINGLE_FILE=1 -s MODULARIZE=1 \
+    -s DEMANGLE_SUPPORT=1 \
+    -s EXPORT_NAME="enigma" -s ALLOW_MEMORY_GROWTH=1 -s ENVIRONMENT=worker -s SINGLE_FILE=1 -s MODULARIZE=1 \
     -s INLINING_LIMIT=1
