@@ -96,6 +96,7 @@ declare module Enigma
         public initialize(): void;
         public get_public_key(): Buffer;
         public derive_secret(peer_public_key: Buffer): Promise<Buffer>;
+        public free(): void;
     }
 
     namespace RSA

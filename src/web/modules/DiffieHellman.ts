@@ -1,51 +1,24 @@
-import {em_array_free, em_array_malloc} from '../utils';
-import {Hash} from './Hash';
 export class DiffieHellman
 {
-    private _heap_private_key?: Uint8Array;
+    private _diffie_hellman?: any;
 
     public constructor()
     {
-        this._heap_private_key = undefined;
+        this._diffie_hellman = new (self as any).enigma.DiffieHellman();
     }
 
     public initialize(): void
     {
-        const private_key = (self as any).enigma.DiffieHellman.generate_private_key();
-
-        if(private_key!.byteLength === 0)
-            throw new Error('Impossible to generate private key');
-
-        this._heap_private_key = em_array_malloc((self as any).enigma, private_key);
+        this._diffie_hellman.initialize();
     }
 
     public get_public_key(): Buffer
     {
-        if(!this._heap_private_key?.byteLength)
-            throw new Error('Private key undefined');
-
-        const public_key: Buffer = (self as any).enigma.DiffieHellman.get_public_key(this._heap_private_key.byteOffset);
-
-        em_array_free((self as any).enigma, this._heap_private_key);
-
-        if(!public_key)
-            throw new Error('Impossible to get public key');
-
-        return Buffer.from(public_key);
+        return Buffer.from(this._diffie_hellman.get_public_key());
     }
 
-    public async derive_secret(peer_public_key: Buffer): Promise<Buffer>
+    public derive_secret(peer_public_key: Buffer): Buffer
     {
-        if(!this._heap_private_key)
-            throw new Error('Private key undefined');
-            
-        const heap_peer_public_key = em_array_malloc((self as any).enigma, peer_public_key);
-
-        const secret: Buffer = (self as any).enigma.DiffieHellman.derive_secret(this._heap_private_key.byteOffset, heap_peer_public_key.byteOffset, heap_peer_public_key.byteLength);
-
-        em_array_free((self as any).enigma, this._heap_private_key);
-        em_array_free((self as any).enigma, heap_peer_public_key);
-
-        return Hash.digest_buffer(secret);
+        return Buffer.from(this._diffie_hellman.derive_secret(peer_public_key));
     }
 }

@@ -135,6 +135,7 @@ export class AES
 
         if(typeof message === 'string')
             message = Buffer.from(message, 'utf8');
+            
         if(!iv)
             iv = Random.bytes(defaults.aes.iv_bytes);
 

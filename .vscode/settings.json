@@ -1,4 +1,11 @@
 {
+    "C_Cpp.default.browse.path": [
+        "${workspaceFolder}/bindings/deps/openssl/include"
+    ],
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/build/deps/openssl/include",
+        "${workspaceFolder}/build/deps/ed25519/src"
+    ],
     "files.associations": {
         "array": "cpp",
         "atomic": "cpp",
@@ -64,6 +71,14 @@
         "__tuple": "cpp",
         "ios": "cpp",
         "locale": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "__errc": "cpp",
+        "__node_handle": "cpp",
+        "__tree": "cpp",
+        "bit": "cpp",
+        "codecvt": "cpp",
+        "map": "cpp",
+        "stack": "cpp",
+        "filesystem": "cpp"
     }
 }
