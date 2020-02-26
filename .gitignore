@@ -248,3 +248,4 @@ build/
 dist/
 dependencies/
 deps/
+demo/public/
