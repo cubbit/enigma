@@ -114,7 +114,15 @@ export class AES
         // @ts-ignore
         this._algorithm = (options && options.algorithm) || AES.Algorithm[defaults.aes.algorithm as any] as AES.Algorithm;
 
-        this._webcrypto_key = await self.crypto.subtle.importKey('raw', this._key.buffer, this._algorithm, false, ['encrypt', 'decrypt']);
+        console.log('aes', this._key.buffer);
+        
+        try {
+            this._webcrypto_key = await self.crypto.subtle.importKey('raw', this._key.buffer, this._algorithm, false, ['encrypt', 'decrypt']);
+            
+        } catch (error) {
+            console.log(error);
+            throw new Error('aes import key error');
+        }
 
         return this;
     }

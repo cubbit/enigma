@@ -95,7 +95,7 @@ declare module Enigma
         constructor();
         public initialize(): void;
         public get_public_key(): Buffer;
-        public derive_secret(peer_public_key: Buffer): Promise<Buffer>;
+        public derive_secret(peer_public_key: Buffer): Promise<string>;
         public free(): void;
     }
 

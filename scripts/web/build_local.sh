@@ -27,25 +27,25 @@ if [[ ! -d ./openssl ]]; then
     make build_crypto
 fi
 
-emcc --bind -O3 -o "$BUILD_PATH"/enigma.web.js \
-    "$SRC_PATH"/ed25519.cc "$SRC_PATH"/aes.cc "$SRC_PATH"/sha256.cc "$SRC_PATH"/diffie_hellman.cc \
-    "$DEPS_PATH"/ed25519/src/*.c \
-    "$DEPS_PATH"/openssl/libcrypto.a \
-    -I"$DEPS_PATH"/ed25519/src \
-    -I"$DEPS_PATH"/openssl/include \
-    -DED25519_NO_SEED \
-    -s DEMANGLE_SUPPORT=1 \
-    -s EXPORT_NAME="enigma" \
-    -s ALLOW_MEMORY_GROWTH=1 \
-    -s ENVIRONMENT=web \
-    -s SINGLE_FILE=1 \
-    -s MODULARIZE=1 \
-    -s ASSERTIONS=1 \
-    -fsanitize=undefined \
-    -g \
-    -fno-omit-frame-pointer \
-    -s SAFE_HEAP=1 \
-    -s INLINING_LIMIT=1
+# emcc --bind -O3 -o "$BUILD_PATH"/enigma.web.js \
+#     "$SRC_PATH"/ed25519.cc "$SRC_PATH"/aes.cc "$SRC_PATH"/sha256.cc "$SRC_PATH"/diffie_hellman.cc \
+#     "$DEPS_PATH"/ed25519/src/*.c \
+#     "$DEPS_PATH"/openssl/libcrypto.a \
+#     -I"$DEPS_PATH"/ed25519/src \
+#     -I"$DEPS_PATH"/openssl/include \
+#     -DED25519_NO_SEED \
+#     -s DEMANGLE_SUPPORT=1 \
+#     -s EXPORT_NAME="enigma" \
+#     -s ALLOW_MEMORY_GROWTH=1 \
+#     -s ENVIRONMENT=web \
+#     -s SINGLE_FILE=1 \
+#     -s MODULARIZE=1 \
+#     -s ASSERTIONS=1 \
+#     -fsanitize=undefined \
+#     -g \
+#     -fno-omit-frame-pointer \
+#     -s SAFE_HEAP=1 \
+#     -s INLINING_LIMIT=1
 
 # emcc --bind -O3 -o "$BUILD_PATH"/enigma.worker.js \
 #     "$SRC_PATH"/ed25519.cc "$SRC_PATH"/aes.cc "$SRC_PATH"/sha256.cc "$SRC_PATH"/diffie_hellman.cc \

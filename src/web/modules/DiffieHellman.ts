@@ -1,3 +1,5 @@
+import {Hash} from './Hash';
+
 export class DiffieHellman
 {
     private _diffie_hellman?: any;
@@ -17,8 +19,9 @@ export class DiffieHellman
         return Buffer.from(this._diffie_hellman.get_public_key());
     }
 
-    public derive_secret(peer_public_key: Buffer): Buffer
+    public derive_secret(peer_public_key: Buffer): Promise<string>
     {
-        return Buffer.from(this._diffie_hellman.derive_secret(peer_public_key));
+        const secret = this._diffie_hellman.derive_secret(peer_public_key.toString());
+        return Hash.digest(secret, { algorithm: Hash.Algorithm.SHA256, encoding: Hash.Encoding.BASE64 });
     }
 }
