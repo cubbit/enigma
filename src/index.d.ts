@@ -83,6 +83,15 @@ declare module Enigma
         sign(message: string | Buffer): Buffer;
         readonly keypair: ED25519.Keypair;
     }
+    
+    class DiffieHellman
+    {
+        constructor();
+        public initialize(): void;
+        public get_public_key(): Buffer;
+        public derive_secret(peer_public_key: Buffer): Promise<string>;
+        public free(): void;
+    }
 
     namespace RSA
     {
