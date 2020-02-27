@@ -7,11 +7,21 @@ describe('DiffieHellman', () =>
         await Enigma.init();
     });
 
-    it.only('should initialize without throwing', () =>
+    it('should initialize without throwing', () =>
     {
         const dh = new Enigma.DiffieHellman();
 
         expect(() => dh.initialize()).not.toThrow();
+    });
+
+    it('should throw if not initialized', async () =>
+    {
+        const dh = new Enigma.DiffieHellman();
+
+        expect.assertions(2);
+
+        expect(() => dh.get_public_key()).toThrow();
+        await expect(dh.derive_secret(Buffer.alloc(0))).rejects.toThrow();
     });
 
     it('should return public key', async () =>
@@ -38,7 +48,7 @@ describe('DiffieHellman', () =>
         const pk1 = dh1.get_public_key();
         const pk2 = dh2.get_public_key();
 
-        const secret1:Buffer = await dh1.derive_secret(pk2);
+        const secret1: Buffer = await dh1.derive_secret(pk2);
         const secret2: Buffer = await dh2.derive_secret(pk1);
 
         expect(secret1.toString() === secret2.toString()).toBe(true);

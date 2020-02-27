@@ -26,6 +26,9 @@ export class DiffieHellman
 
     public async derive_secret(peer_public_key: Buffer): Promise<Buffer>
     {
+        if(!this._public_key)
+            throw new Error('DiffieHellman not initialized');
+
         const secret:Buffer = this._diffie_hellman.computeSecret(peer_public_key);
 
         return Hash.digest_buffer(secret);
