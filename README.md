@@ -242,6 +242,26 @@ Enigma.init().then(async () =>
 });
 ```
 
+### Diffie-Hellman key exchange
+
+```ts
+import Enigma from '@cubbit/enigma';
+
+Enigma.init().then(async () =>
+{
+    const dh = new Enigma.DiffieHellman();
+
+    dh.initialize();
+
+    const public_key = dh.get_public_key();
+
+    // receive public key from remote endpoint
+    // send my public key to remote endpoint
+
+    const shared_secret: Buffer = await dh.derive_secret(endpoint_public_key);
+});
+```
+
 ## How to rebuild the bindings
 
 To build the project's bindings just run the following command after cloning the repository:
