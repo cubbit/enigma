@@ -1,5 +1,3 @@
-import {Hash} from './Hash';
-
 export class DiffieHellman
 {
     private _diffie_hellman?: any;
@@ -11,17 +9,34 @@ export class DiffieHellman
 
     public initialize(): void
     {
-        this._diffie_hellman.initialize();
+        const returned: any = this._diffie_hellman.initialize();
+
+        if(returned.error)
+            throw new Error(returned);
     }
 
-    public get_public_key(): Buffer
+    public get_public_key(): string
     {
-        return Buffer.from(this._diffie_hellman.get_public_key());
+        const public_key: any = this._diffie_hellman.get_public_key();
+
+        if(public_key.error)
+            throw new Error(public_key.error);
+
+        return public_key.value;
     }
 
-    public derive_secret(peer_public_key: Buffer): Promise<string>
+    public derive_secret(endpoint_public_key: Buffer): Promise<string>
     {
-        const secret = this._diffie_hellman.derive_secret(peer_public_key.toString());
-        return Hash.digest(secret, { algorithm: Hash.Algorithm.SHA256, encoding: Hash.Encoding.BASE64 });
+        const secret = this._diffie_hellman.derive_secret(endpoint_public_key.toString());
+
+        if(secret.error)
+            throw new Error(secret.error);
+
+        return secret.value;
+    }
+
+    public free(): void
+    {
+        this._diffie_hellman.free();
     }
 }

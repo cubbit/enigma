@@ -2,6 +2,10 @@
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
 
+#include <sstream>
+#include <iostream>
+#include <iomanip>
+
 #include <openssl/evp.h>
 #include <openssl/ec.h>
 #include <openssl/pem.h>
@@ -11,15 +15,22 @@
 
 using namespace emscripten;
 
-#define ERROR(TEST)                    \
-    if(error_return.empty() && (TEST)) \
-        error_return = #TEST;
+#define ERROR_NULL(VAR, FUN, ERR_VAR, MESSAGE)                 \
+    if((ERR_VAR).empty())                                      \
+    {                                                          \
+        VAR = FUN;                                             \
+        if(VAR == nullptr)                                     \
+            ERR_VAR = #MESSAGE;                                \
+    }
 
-#define ERRORC(TEST)                       \
-    {                                      \
-        size_t a = (size_t)TEST;           \
-        if(error_return.empty() && a != 1) \
-            error_return = #TEST;          \
+#define ERROR_EVP(FUN, ERR_VAR, MESSAGE)                       \
+    {                                                          \
+        if((ERR_VAR).empty())                                  \
+        {                                                      \
+            size_t a = (size_t)FUN;                            \
+            if(a != 1)                                         \
+                ERR_VAR = #MESSAGE;                            \
+        }                                                      \
     }
 
 class DiffieHellman
@@ -30,161 +41,158 @@ class DiffieHellman
 
   public:
 
+    DiffieHellman() : _private_key(nullptr)
+    {}
+
     void free()
     {
         EVP_PKEY_free(this->_private_key);
     }
 
-    std::string initialize()
+    inline val _error_js(std::string error_message)
     {
-        std::string error_return;
+        auto error = val::object();
+        error.set("error", error_message);
+        return error;
+    }
 
-        EVP_PKEY_CTX* parameters_context = NULL;
-        EVP_PKEY_CTX* key_generation_context = NULL;
+    inline val _value_js(std::string value = "")
+    {
+        auto value_js = val::object();
         
-        EVP_PKEY* params = NULL;
+        if(value == "")
+            value_js.set("value", val::undefined());
+        else
+            value_js.set("value", value);
 
-        parameters_context = EVP_PKEY_CTX_new_id(EVP_PKEY_EC, nullptr);
-        ERROR(parameters_context == nullptr);
+        return value_js;
+    }
 
-        ERRORC(EVP_PKEY_paramgen_init(parameters_context));
+    val initialize()
+    {
+        std::string error_message;
 
-        ERRORC(EVP_PKEY_CTX_set_ec_paramgen_curve_nid(parameters_context, NID_X9_62_prime256v1));
+        EVP_PKEY_CTX* parameters_context = nullptr;
+        EVP_PKEY_CTX* key_generation_context = nullptr;
+        EVP_PKEY* params = nullptr;
+        this->_private_key = nullptr;
 
-        ERRORC(EVP_PKEY_paramgen(parameters_context, &params));
+        ERROR_NULL(parameters_context, EVP_PKEY_CTX_new_id(EVP_PKEY_EC, nullptr), error_message, "No context for parameter generation detected");
 
-        if(!error_return.empty())
-        {
-            EVP_PKEY_CTX_free(parameters_context);
-            return error_return;
-        }
+        ERROR_EVP(EVP_PKEY_paramgen_init(parameters_context), error_message, "Unable to initialize parameters generation");
 
-        key_generation_context = EVP_PKEY_CTX_new(params, nullptr);
-        ERROR(key_generation_context == nullptr);
+        ERROR_EVP(EVP_PKEY_CTX_set_ec_paramgen_curve_nid(parameters_context, NID_X9_62_prime256v1), error_message, "Unable to set the curve for parameters generation");
+        ERROR_EVP(EVP_PKEY_CTX_set_ec_param_enc(parameters_context, OPENSSL_EC_NAMED_CURVE), error_message, "Unable to set the curve for parameters generation");
+        ERROR_EVP(EVP_PKEY_paramgen(parameters_context, &params), error_message, "Unable to generate parameters");
 
-        if(!error_return.empty())
-        {
-            EVP_PKEY_CTX_free(parameters_context);
-            return error_return;
-        }
-
-        ERRORC(EVP_PKEY_keygen_init(key_generation_context));
-
-        ERRORC(EVP_PKEY_keygen(key_generation_context, &this->_private_key));
+        ERROR_NULL(key_generation_context, EVP_PKEY_CTX_new(params, nullptr), error_message, "Unable to create context for key generation");
+        ERROR_EVP(EVP_PKEY_keygen_init(key_generation_context), error_message, "Unable to init context for key generation");
+        ERROR_EVP(EVP_PKEY_keygen(key_generation_context, &this->_private_key), error_message, "Unable to generate private key");
 
         EVP_PKEY_CTX_free(parameters_context);
         EVP_PKEY_CTX_free(key_generation_context);
+        EVP_PKEY_free(params);
 
-        if(!error_return.empty())
-            return error_return;
-
-        return "ok";
+        if(!error_message.empty())
+            return this->_error_js(error_message);
+        
+        return this->_value_js();
     }
 
-    std::string get_public_key()
+    val get_public_key()
     {
-        std::string public_key_string;
-        std::string	error_return;
+        if(this->_private_key == nullptr)
+            return this->_error_js("not initialized");
 
-        if(!error_return.empty())
-            return error_return;
-            
+        std::string public_key_str;
+        std::string	error_message;
+
         {
-            BIO* in_memory_buffer;
-            BUF_MEM* in_memory_buffer_content_ptr;
-            in_memory_buffer = BIO_new(BIO_s_mem());
+            BIO* bio_out;
+            BUF_MEM* bio_out_buffer = nullptr;
+            bio_out = BIO_new(BIO_s_mem());
 
-            ERRORC(PEM_write_bio_PUBKEY(in_memory_buffer, this->_private_key))
+            ERROR_EVP(PEM_write_bio_PUBKEY(bio_out, this->_private_key), error_message, "Unable to write public key to memory");
 
-            if(!error_return.empty())
+            if(error_message.empty())
             {
-                BIO_free(in_memory_buffer);
-                return error_return;
+                BIO_get_mem_ptr(bio_out, &bio_out_buffer);
+
+                public_key_str.resize(bio_out_buffer->length);
+
+                memcpy((void*)public_key_str.data(), bio_out_buffer->data, bio_out_buffer->length);
             }
 
-            BIO_get_mem_ptr(in_memory_buffer, &in_memory_buffer_content_ptr);
-
-            public_key_string.resize(in_memory_buffer_content_ptr->length);
-
-            memcpy((void*)public_key_string.data(), in_memory_buffer_content_ptr->data, in_memory_buffer_content_ptr->length);
-
-            BIO_free(in_memory_buffer);
+            BIO_free_all(bio_out);
         }
 
-        return public_key_string;
+        if(!error_message.empty())
+            return this->_error_js(error_message);
+
+        return this->_value_js(public_key_str);
     }
-    
-    std::string derive_secret(std::string peer_public_key)
+
+    std::string uint8_to_hex_string(std::vector<uint8_t> v)
     {
-        std::string secret_string;
-        std::vector<uint8_t> secret_digest_string;
+        std::ostringstream ss;
+        ss << std::hex << std::setfill( '0' );
+        std::for_each( v.cbegin(), v.cend(), [&]( int c ) { ss << std::setw( 2 ) << c; } );
+        return ss.str();
+    }
+
+    val derive_secret(std::string endpoint_public_key)
+    {
+        if(this->_private_key == nullptr)
+            return this->_error_js("not initialized");
 
         size_t secret_length;
+        std::vector<uint8_t> secret_vec;
+        std::string	error_message;
 
-        std::string	error_return;
-
-        EVP_PKEY_CTX* shared_secret_context;
+        EVP_PKEY* endpoint_public_key_evp = nullptr;
+        EVP_PKEY_CTX* derivation_context = nullptr;
         
-        BIO* bio_public;
-        BUF_MEM* buf_mem_public;
-        EVP_PKEY* peer_public_key_evp;
-        
-        if(!error_return.empty())
-            return error_return;
-
         {
             BIO* bio;
-            BUF_MEM* buf_mem;
+            BUF_MEM* bio_buffer;
 
             bio = BIO_new(BIO_s_mem());
-            buf_mem = BUF_MEM_new();
+            bio_buffer = BUF_MEM_new();
 
-            BUF_MEM_grow(buf_mem, peer_public_key.size());
+            BUF_MEM_grow(bio_buffer, endpoint_public_key.size());
 
-            memcpy(buf_mem->data, (unsigned char*) peer_public_key.data(), peer_public_key.size());
+            memcpy(bio_buffer->data, (unsigned char*) endpoint_public_key.data(), endpoint_public_key.size());
 
-            BIO_set_mem_buf(bio, buf_mem, BIO_NOCLOSE);
+            BIO_set_mem_buf(bio, bio_buffer, BIO_NOCLOSE);
 
-            peer_public_key_evp = PEM_read_bio_PUBKEY(bio, nullptr, nullptr, nullptr);
-            ERROR(peer_public_key_evp == NULL);
+            ERROR_NULL(endpoint_public_key_evp, PEM_read_bio_PUBKEY(bio, nullptr, nullptr, nullptr), error_message, "Unable to write public key to memory");
 
-            if(!error_return.empty())
-            {
-                BIO_free(bio);
-                return error_return;
-            }
+            BIO_free_all(bio);
+            BUF_MEM_free(bio_buffer);
 
-            bio_public = bio;
-            buf_mem_public = buf_mem;
+            if(!error_message.empty())
+                return this->_error_js(error_message);
         }
 
-        shared_secret_context = EVP_PKEY_CTX_new(this->_private_key, nullptr);
+        ERROR_NULL(derivation_context, EVP_PKEY_CTX_new(this->_private_key, nullptr), error_message, "Unable to create shared secret context");
 
-        ERROR(shared_secret_context == nullptr);
+        ERROR_EVP(EVP_PKEY_derive_init(derivation_context), error_message, "Unable to initialize shared secret context");
+        ERROR_EVP(EVP_PKEY_derive_set_peer(derivation_context, endpoint_public_key_evp), error_message, "Unable to set peer public key");
 
-        ERRORC(EVP_PKEY_derive_init(shared_secret_context));
-        ERRORC(EVP_PKEY_derive_set_peer(shared_secret_context, peer_public_key_evp));
+        ERROR_EVP(EVP_PKEY_derive(derivation_context, nullptr, &secret_length), error_message, "Error while trying to derive secret length");
 
-        ERRORC(EVP_PKEY_derive(shared_secret_context, nullptr, &secret_length));
-
-        if(!error_return.empty())
-        {
-            BIO_free(bio_public);
-            EVP_PKEY_CTX_free(shared_secret_context);
-            return error_return;
-        }
-
-        secret_string.resize(secret_length);
+        if(error_message.empty())
+            secret_vec.resize(secret_length);
         
-        ERRORC(EVP_PKEY_derive(shared_secret_context, (unsigned char*) secret_string.data(), &secret_length))
+        ERROR_EVP(EVP_PKEY_derive(derivation_context, (unsigned char*) secret_vec.data(), &secret_length), error_message, "Could not dervive the shared secret");
 
-        BIO_free(bio_public);
-        EVP_PKEY_CTX_free(shared_secret_context);
+        EVP_PKEY_CTX_free(derivation_context);
+        EVP_PKEY_free(endpoint_public_key_evp);
 
-        if(!error_return.empty())
-            return error_return;
+        if(!error_message.empty())
+            return this->_error_js(error_message);
 
-        return secret_string;
+        return this->_value_js(this->uint8_to_hex_string(secret_vec));
     }
 };
 
@@ -196,7 +204,4 @@ EMSCRIPTEN_BINDINGS(DiffieHellman)
         .function("initialize", &DiffieHellman::initialize)
         .function("get_public_key", &DiffieHellman::get_public_key)
         .function("derive_secret", &DiffieHellman::derive_secret);
-        // .class_function("generate_private_key_seed", &DiffieHellman::generate_private_key_seed)
-        // .class_function("get_public_key", &DiffieHellman::get_public_key)
-        // .class_function("derive_secret", &DiffieHellman::derive_secret);
 }

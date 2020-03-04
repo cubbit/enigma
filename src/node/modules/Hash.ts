@@ -23,13 +23,6 @@ export class Hash
         return createHash(algorithm).update(message).digest().toString(encoding);
     }
 
-    public static async digest_buffer(message: string | Buffer, options?: Hash.Options): Promise<Buffer>
-    {
-        // @ts-ignore
-        const algorithm: Hash.Algorithm = (options && options.algorithm) || Hash.Algorithm[defaults.hash.algorithm as any] as Hash.Algorithm;
-        return createHash(algorithm).update(message).digest();
-    }
-
     public static digest_file(file: string | File, options?: Hash.Options): Promise<string>
     {
         return new Promise<string>((resolve, reject) =>

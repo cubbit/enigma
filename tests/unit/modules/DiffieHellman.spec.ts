@@ -1,5 +1,7 @@
 import Enigma from '../../../src';
 
+import {createPublicKey} from 'crypto';
+
 describe('DiffieHellman', () =>
 {
     beforeAll(async () =>
@@ -21,20 +23,36 @@ describe('DiffieHellman', () =>
         expect.assertions(2);
 
         expect(() => dh.get_public_key()).toThrow();
-        await expect(dh.derive_secret(Buffer.alloc(0))).rejects.toThrow();
+
+        await expect(dh.derive_secret('')).rejects.toThrow();
     });
 
-    it('should return public key', async () =>
+    it('should throw if endpoint public key is not correct', async () =>
+    {
+        const dh = new Enigma.DiffieHellman();
+
+        expect.assertions(3);
+
+        dh.initialize();
+
+        await expect(dh.derive_secret(dh.get_public_key().substr(20))).rejects.toThrow();
+        await expect(dh.derive_secret('')).rejects.toThrow();
+        await expect(dh.derive_secret('aisdfcbuishdb')).rejects.toThrow();
+    });
+
+    it('should return correct ec public key in spki pem format', async () =>
     {
         const dh1 = new Enigma.DiffieHellman();
-        const dh2 = new Enigma.DiffieHellman();
 
         dh1.initialize();
-        dh2.initialize();
-
-        const pk: Buffer = dh1.get_public_key();
-
-        expect(pk.byteLength).toBe(65);
+        
+        expect(() =>
+        {
+            createPublicKey({
+                key: dh1.get_public_key().toString('utf-8'),
+                format: 'pem',
+            });
+        }).not.toThrow();
     });
 
     it('should derive secrete', async () =>
@@ -48,9 +66,9 @@ describe('DiffieHellman', () =>
         const pk1 = dh1.get_public_key();
         const pk2 = dh2.get_public_key();
 
-        const secret1: Buffer = await dh1.derive_secret(pk2);
-        const secret2: Buffer = await dh2.derive_secret(pk1);
+        const secret1 = await dh1.derive_secret(pk2);
+        const secret2 = await dh2.derive_secret(pk1);
 
-        expect(secret1.toString() === secret2.toString()).toBe(true);
+        expect(secret1 === secret2).toBe(true);
     });
 });
