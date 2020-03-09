@@ -17,7 +17,7 @@ make build_crypto
 cd /src
 
 emcc --bind -O3 -o /out/enigma.web.js \
-    /bindings/ed25519.cc /bindings/aes.cc /bindings/sha256.cc \
+    /bindings/ed25519.cc /bindings/aes.cc /bindings/sha256.cc /bindings/diffie_hellman.cc \
     ed25519/src/*.c \
     openssl/libcrypto.a \
     -Ied25519/src \
@@ -27,7 +27,7 @@ emcc --bind -O3 -o /out/enigma.web.js \
     -s INLINING_LIMIT=1
 
 emcc --bind -O3 -o /out/enigma.worker.js \
-    /bindings/ed25519.cc /bindings/aes.cc /bindings/sha256.cc \
+    /bindings/ed25519.cc /bindings/aes.cc /bindings/sha256.cc /bindings/diffie_hellman.cc \
     ed25519/src/*.c \
     openssl/libcrypto.a \
     -Ied25519/src \

@@ -68,7 +68,7 @@ Enigma includes the following cryptographical utilities:
 - **Hashing algorithms ([SHA256](https://wikipedia.org/wiki/Secure_Hash_Algorithm))**
 - **Simmetric encryption algorithms ([AES256](https://wikipedia.org/wiki/Advanced_Encryption_Standard))**
 - **Asymmetric encryption algorithms ([RSA](https://en.wikipedia.org/wiki/RSA_(cryptosystem)), [ECC](https://en.wikipedia.org/wiki/Elliptic-curve_cryptography))**
-- **Misc utilities (Random, [Key derivation](https://en.wikipedia.org/wiki/Key_derivation_function) algorithms)**
+- **Misc utilities (DiffieHellman key exchange, Random, [Key derivation](https://en.wikipedia.org/wiki/Key_derivation_function) algorithms)**
 
 Please refer to the [API](#API) section to discover more about how to use each of them
 
@@ -239,6 +239,32 @@ Enigma.init().then(async () =>
 {
     const random_int4 = Enigma.Random.integer(32);
     const random_bytes = Enigma.Random.bytes(32);
+});
+```
+
+### Diffie-Hellman key exchange
+
+A class which permits a DiffieHellman key echange based on elliptic curves.
+Elliptic curve adopted is *NID_X9_62_prime256v1*.
+- `initialize(): void`: generate the key pairs.
+- `get_public_key(): string`: returns the public key as a string having these properties: _PEM_ format; uncompressed; ASN.1 standard form called _NAMED CURVE_.
+- `derive_secret(endpoint_public_key: string): string`: needs a public key in the same format described above and returns the secret as a string in hex format.
+
+```ts
+import Enigma from '@cubbit/enigma';
+
+Enigma.init().then(async () =>
+{
+    const dh = new Enigma.DiffieHellman();
+
+    dh.initialize();
+
+    const public_key: string = dh.get_public_key();
+
+    // receive public key from remote endpoint
+    // send my public key to remote endpoint
+
+    const shared_secret: string = await dh.derive_secret(endpoint_public_key);
 });
 ```
 
