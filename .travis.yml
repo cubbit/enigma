@@ -22,7 +22,7 @@ install:
   - npm ci
 
 after_success:
-  - if [[ "$TRAVIS_NODE_VERSION" == "10" ]]; then npm run binary:pack && npm run binary:publish; fi
+  - if [[ "$TRAVIS_NODE_VERSION" == "12" ]]; then npm run binary:pack && npm run binary:publish; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$TRAVIS_NODE_VERSION" == "12" ]]; then TARGET_ARCH=arm npm run cross && TARGET_ARCH=arm npm run binary:publish; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" && "$TRAVIS_NODE_VERSION" == "12" ]]; then TARGET_ARCH=arm64 npm run cross && TARGET_ARCH=arm64 npm run binary:publish; fi
 
