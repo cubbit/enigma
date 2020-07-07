@@ -17,6 +17,7 @@ export namespace KeyDerivation
     {
         key_bytes?: number;
         salt_bytes?: number;
+        salt?: Buffer;
         iterations?: number;
         hmac_algorithm?: string;
     }
@@ -36,8 +37,8 @@ export namespace KeyDerivation
     {
         return new Promise<Buffer>((resolve, reject) =>
         {
-            const salt_bytes = (options && options.salt_bytes) || defaults.key_derivation.salt_bytes;
-            const iterations = (options && options.iterations) || defaults.key_derivation.iterations;
+            const salt_bytes = options?.salt?.length || options?.salt_bytes || defaults.key_derivation.salt_bytes;
+            const iterations = options?.iterations || defaults.key_derivation.iterations;
 
             const buffer_max_length = 2 ** 32;
             if(iterations > buffer_max_length)
@@ -45,14 +46,13 @@ export namespace KeyDerivation
             if(salt_bytes > buffer_max_length)
                 return reject(new Error(`Salt length must be at most ${buffer_max_length}`));
 
-            const key_bytes = (options && options.key_bytes) || defaults.key_derivation.key_bytes;
-            const salt = Random.bytes(salt_bytes);
+            const key_bytes = options?.key_bytes || defaults.key_derivation.key_bytes;
+            const salt = options?.salt || Random.bytes(salt_bytes);
             // @ts-ignore
-            const hmac_algorithm = (options && options.hmac_algorithm) || KeyDerivation.HMACAlgorithm[defaults.key_derivation.hmac_algorithm as any] as KeyDerivation.HMACAlgorithm;
+            const hmac_algorithm = options?.hmac_algorithm || KeyDerivation.HMACAlgorithm[defaults.key_derivation.hmac_algorithm as any] as KeyDerivation.HMACAlgorithm;
 
             crypto_pbkdf2(message, salt, iterations, key_bytes, hmac_algorithm, (error, derived) =>
             {
-
                 if(error)
                     return reject(error);
 

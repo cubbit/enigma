@@ -24,6 +24,7 @@ declare module Enigma
         {
             key_bytes?: number;
             salt_bytes?: number;
+            salt?: Buffer;
             iterations?: number;
             hmac_algorithm?: HMACAlgorithm;
         }
@@ -83,7 +84,7 @@ declare module Enigma
         sign(message: string | Buffer): Buffer;
         readonly keypair: ED25519.Keypair;
     }
-    
+
     class DiffieHellman
     {
         constructor();
