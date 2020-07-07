@@ -78,7 +78,7 @@ export namespace KeyDerivation
     export async function pbkdf2_verify(message: string | Buffer, salted_key: Buffer, hmac_algorithm?: KeyDerivation.HMACAlgorithm): Promise<boolean>
     {
         const salt_bytes = salted_key.readUInt32BE(0);
-        const iterations = salted_key.readUInt32BE(4);
+        const iterations = salted_key.readUInt32BE(4) || 1;
         const key_bytes = salted_key.length - salt_bytes - 8;
         const key_bits = key_bytes * 8;
         const salt = salted_key.slice(8, salt_bytes + 8);
