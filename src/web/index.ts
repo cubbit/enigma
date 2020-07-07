@@ -22,11 +22,13 @@ export function init(): Promise<void>
             else
                 enigma_module = require('../wasm/enigma.worker.js')();
 
-            enigma_module.onRuntimeInitialized = () =>
+            enigma_module.then((enigma: any) =>
             {
-                (self as any).enigma = enigma_module;
+                (self as any).enigma = enigma;
                 resolve();
-            };
+            });
         }
+        else
+            resolve();
     });
 }
