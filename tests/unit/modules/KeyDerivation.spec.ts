@@ -23,6 +23,25 @@ describe('KeyDerivation', () =>
         expect(salted_key).toBeDefined();
     });
 
+    it('should derive the same key with the same salt', async () =>
+    {
+        expect.assertions(1);
+        const salt = await Enigma.Random.bytes(32);
+        const salted_key_1 = await Enigma.KeyDerivation.pbkdf2(message, {salt});
+        const salted_key_2 = await Enigma.KeyDerivation.pbkdf2(message, {salt});
+        expect(salted_key_1).toEqual(salted_key_2);
+    });
+
+    it('should derive different keys with different salts', async () =>
+    {
+        expect.assertions(1);
+        const salt_1 = await Enigma.Random.bytes(32);
+        const salt_2 = await Enigma.Random.bytes(32);
+        const salted_key_1 = await Enigma.KeyDerivation.pbkdf2(message, {salt: salt_1});
+        const salted_key_2 = await Enigma.KeyDerivation.pbkdf2(message, {salt: salt_2});
+        expect(salted_key_1).not.toEqual(salted_key_2);
+    });
+
     it('should derive a key with given salt lenghts', async () =>
     {
         const salt_lengths = [64, 128, 256];
