@@ -44,27 +44,29 @@
   "dependencies": {
     "@cubbit/web-file-stream": "^1.0.0",
     "bindings": "^1.4.0",
-    "fs-extra": "^8.1.0",
-    "node-addon-api": "^2.0.0",
+    "fs-extra": "^9.0.1",
+    "js-x25519": "git+https://github.com/CryptoEsel/js-x25519.git",
+    "node-addon-api": "^3.0.2",
     "pem-jwk": "^2.0.0",
-    "tar": "^5.0.5"
+    "tar": "^6.0.5",
+    "tsc": "^1.20150623.0"
   },
   "devDependencies": {
-    "@types/fs-extra": "^8.0.1",
-    "@types/jest": "^24.0.23",
-    "@types/node": "^12.12.14",
+    "@types/fs-extra": "^9.0.2",
+    "@types/jest": "^26.0.14",
+    "@types/node": "^14.11.8",
     "@types/pem-jwk": "^1.5.0",
-    "@types/sinon": "^7.5.1",
-    "aws-sdk": "^2.584.0",
-    "concurrently": "^5.2.0",
+    "@types/sinon": "^9.0.8",
+    "aws-sdk": "^2.772.0",
+    "concurrently": "^5.3.0",
     "glob": "^7.1.6",
-    "jest": "^24.9.0",
-    "rimraf": "^3.0.0",
-    "sinon": "^7.5.0",
-    "ts-jest": "^24.2.0",
-    "ts-node": "^8.5.4",
-    "tslint": "^5.20.1",
-    "typedoc": "^0.15.3",
-    "typescript": "^3.7.3"
+    "jest": "^26.5.3",
+    "rimraf": "^3.0.2",
+    "sinon": "^9.2.0",
+    "ts-jest": "^26.4.1",
+    "ts-node": "^9.0.0",
+    "tslint": "^6.1.3",
+    "typedoc": "^0.19.2",
+    "typescript": "^4.0.3"
   }
 }
