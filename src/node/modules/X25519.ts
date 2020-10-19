@@ -52,6 +52,7 @@ export class X25519
     {
         if(!this._aes)
             throw new Error('Init method must be called first');
+            
         return this._aes.decrypt(cipher)
     }
 
