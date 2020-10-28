@@ -85,6 +85,25 @@ declare module Enigma
         readonly keypair: ED25519.Keypair;
     }
 
+    namespace X25519
+    {
+        interface Options
+        {
+            key?: Buffer;
+            seed?: Buffer;
+        }
+    }
+
+    class X25519
+    {
+        init(options?: X25519.Options): Promise<X25519>;
+        static create_key(seed?: Buffer): Buffer;
+        encrypt(message: string | Buffer): Promise<{content: Buffer; iv: Buffer; tag?: Buffer}>;
+        decrypt(cipher: {content: Buffer; iv: Buffer; tag?: Buffer}): Promise<Buffer>;
+        readonly key: Buffer;
+        readonly public_key: Buffer;
+    }
+
     class DiffieHellman
     {
         constructor();
