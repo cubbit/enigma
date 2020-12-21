@@ -35,7 +35,7 @@ export class X25519
 
         const keypair = ED25519.create_keypair(seed);
 
-        return Buffer.from(X25519_key_exchange.getSharedKey(seed, keypair.public_key));
+        return Buffer.from(X25519_key_exchange.getSharedKey(seed, keypair.public_key)).slice(0,32);
     }
 
     //#endregion
