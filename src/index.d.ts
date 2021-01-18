@@ -43,6 +43,7 @@ declare module Enigma
 
         enum Algorithm
         {
+            SHA1,
             SHA256
         }
 
