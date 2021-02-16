@@ -1,5 +1,5 @@
-import {ED25519} from "./ED25519";
-import {AES} from "./AES";
+import {ED25519} from './ED25519';
+import {AES} from './AES';
 
 // tslint:disable-next-line:no-var-requires
 const X25519_key_exchange = require('js-x25519');
@@ -53,7 +53,7 @@ export class X25519
         if(!this._aes)
             throw new Error('Init method must be called first');
             
-        return this._aes.decrypt(cipher)
+        return this._aes.decrypt(cipher);
     }
 
     //#region getters
