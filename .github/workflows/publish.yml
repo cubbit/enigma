@@ -1,0 +1,42 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test_and_publish:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-18.04, macos-10.15, windows-latest]
+        node: [12, 14]
+    env:
+      ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
+      SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Run tests
+        id: run_tests
+        run: |
+          npm ci
+          npm run test
+      - name: Publish
+        id: publish
+        if: matrix.node == 12
+        run: |
+          npm run binary:pack
+          npm run binary:publish
+      - name: Publish linux ARM
+        id: publish_linux_arm
+        if: matrix.os == 'ubuntu-18.04' && matrix.node == 12
+        run: |
+          TARGET_ARCH=arm npm run cross
+          TARGET_ARCH=arm npm run binary:publish
+          TARGET_ARCH=arm64 npm run cross
+          TARGET_ARCH=arm64 npm run binary:publish
