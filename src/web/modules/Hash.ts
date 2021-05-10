@@ -3,6 +3,7 @@ import {Duplex} from 'stream';
 
 import {defaults} from '../../defaults';
 import {em_array_free, em_array_malloc} from '../utils';
+import {base_x} from '../../common/utils/base_x';
 
 export declare namespace Hash
 {
@@ -58,10 +59,20 @@ export class Hash
         const algorithm: Hash.Algorithm = (options && options.algorithm) || Hash.Algorithm[defaults.hash.algorithm as any] as Hash.Algorithm;
         // @ts-ignore
         const encoding: Hash.Encoding = (options && options.encoding) || Hash.Encoding[defaults.hash.encoding as any] as Hash.Encoding;
+
         if(typeof message === 'string')
             message = Buffer.from(message, 'utf8');
 
-        return Buffer.from(await self.crypto.subtle.digest({name: algorithm}, message)).toString(encoding);
+        const hash = Buffer.from(await self.crypto.subtle.digest({name: algorithm}, message));
+
+        switch(encoding)
+        {
+            case Hash.Encoding.BASE58:
+                return base_x.make_encoder(base_x.Encoding.BASE58)(hash);
+
+            default:
+                return hash.toString(encoding);
+        }
     }
 
     public static async digest_file(file: string | File, options?: Hash.Options): Promise<string>
@@ -81,7 +92,19 @@ export class Hash
 
             const stream = new HashStream();
             stream.on('error', reject);
-            stream.on('finish', () => resolve(stream.read().toString(encoding)));
+            stream.on('finish', () => 
+            {
+                const hash_stream = stream.read();
+
+                switch(encoding)
+                {
+                    case Hash.Encoding.BASE58:
+                        return base_x.make_encoder(base_x.Encoding.BASE58)(hash_stream);
+
+                    default:
+                        return resolve(hash_stream.toString(encoding));
+                }
+            });
             WebFileStream.create_read_stream(file).pipe(stream);
         });
     }
@@ -102,12 +125,13 @@ export namespace Hash
     export enum Algorithm
     {
         SHA1 = 'SHA-1',
-        SHA256 = 'SHA-256'
+        SHA256 = 'SHA-256',
     }
 
     export enum Encoding
     {
         BASE64 = 'base64',
-        HEX = 'hex'
+        BASE58 = 'base58',
+        HEX = 'hex',
     }
 }

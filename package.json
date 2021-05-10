@@ -1,6 +1,6 @@
 {
   "name": "@cubbit/enigma",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "private": true,
   "description": "A fast, native, cryptographic engine for the web",
   "main": "index.js",
@@ -43,6 +43,7 @@
   "homepage": "https://github.com/cubbit/enigma#readme",
   "dependencies": {
     "@cubbit/web-file-stream": "^1.0.0",
+    "base-x": "^3.0.8",
     "bindings": "^1.4.0",
     "fs-extra": "^9.0.1",
     "js-x25519": "git+https://github.com/CryptoEsel/js-x25519.git",
