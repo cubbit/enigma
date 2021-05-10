@@ -99,7 +99,7 @@ export class Hash
                 switch(encoding)
                 {
                     case Hash.Encoding.BASE58:
-                        return base_x.make_encoder(base_x.Encoding.BASE58)(hash_stream);
+                        return resolve(base_x.make_encoder(base_x.Encoding.BASE58)(hash_stream));
 
                     default:
                         return resolve(hash_stream.toString(encoding));

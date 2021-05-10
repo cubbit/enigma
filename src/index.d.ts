@@ -44,13 +44,14 @@ declare module Enigma
         enum Algorithm
         {
             SHA1,
-            SHA256
+            SHA256,
         }
 
         enum Encoding
         {
             BASE64,
-            HEX
+            BASE58,
+            HEX,
         }
     }
 
