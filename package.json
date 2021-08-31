@@ -49,7 +49,7 @@
     "js-x25519": "git+https://github.com/CryptoEsel/js-x25519.git",
     "node-addon-api": "^3.0.2",
     "pem-jwk": "^2.0.0",
-    "tar": "^6.1.2"
+    "tar": "^6.1.9"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.2",
