@@ -44,7 +44,12 @@
         'conditions': [
             ['OS=="mac"', {
                 'include_dirs': ['<(module_root)/dependencies/openssl/include'],
-                'libraries': ['-Wl,<(module_root)/dependencies/openssl/libcrypto.a']
+                'libraries': ['-Wl,<(module_root)/dependencies/openssl/libcrypto.a'],
+                'defines': [
+                    'CFLAGS=<!(node -p \"require(\'process\').env.MACOS_DEPLOYMENT_TARGET\") ',
+                    'CPPFLAGS=<!(node -p \"require(\'process\').env.MACOS_DEPLOYMENT_TARGET\") ',
+                    'LDFLAGS=<!(node -p \"require(\'process\').env.MACOS_DEPLOYMENT_TARGET\") '
+                ]
             }],
             ['OS=="linux"', {
                 'include_dirs': ['<(module_root)/dependencies/openssl/include'],

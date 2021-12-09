@@ -8,6 +8,7 @@ const path = require('path');
 const module_path = path.resolve(__dirname, '../..');
 
 const openssl_version = '1.0.2q';
+const macos_deployment_version = '11';
 
 (function dependencies()
 {
@@ -73,6 +74,8 @@ const openssl_version = '1.0.2q';
         else if(platform === 'darwin')
         {
             command = path.resolve(scripts_shell_path, 'prepare.sh');
+
+            env.MACOS_DEPLOYMENT_VERSION = '-mmacosx-version-min=' + macos_deployment_version;
 
             switch(arch)
             {
