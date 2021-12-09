@@ -50,7 +50,7 @@ Enigma is supported on the following platforms.
 |         |  x86   | x64 | arm32 | arm64 |
 | ------- | ------ | --- | ----- | ----- |
 | Linux   | ︎︎︎ ✔︎ | ✔︎  | ✔︎    | ✔︎    |
-| macOS   | -      | ✔︎  | -     | -     |
+| macOS   | -      | ✔︎  | -     | ✔︎     |
 | Windows | ✔︎     | ✔︎  | -     | -     |
 
 After installing just import `@cubbit/enigma` in your code and you are ready to go.

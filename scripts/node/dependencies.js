@@ -7,7 +7,7 @@ const path = require('path');
 
 const module_path = path.resolve(__dirname, '../..');
 
-const openssl_version = '1.0.2q';
+const openssl_version = '3.0.0';
 const macos_deployment_version = '11';
 
 (function dependencies()
@@ -81,6 +81,10 @@ const macos_deployment_version = '11';
             {
                 case 'x64':
                     env.OPENSSL_COMPILER = 'darwin64-x86_64-cc';
+                    break;
+
+                case 'arm64':
+                    env.OPENSSL_COMPILER = 'darwin64-arm64-cc';
                     break;
 
                 default:
