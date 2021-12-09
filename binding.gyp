@@ -56,8 +56,8 @@
                 'libraries': ['-L<(module_root)/dependencies/openssl', '-l:libcrypto.a', '-static-libstdc++']
             }],
             ['OS=="win"', {
-                'include_dirs': ['<(module_root)/dependencies/openssl/inc32'],
-                'libraries': ['-l<(module_root)/dependencies/openssl/out32/libeay32.lib', '-llegacy_stdio_definitions.lib']
+                'include_dirs': ['<(module_root)/dependencies/openssl/include'],
+                'libraries': ['-l<(module_root)/dependencies/openssl/libcrypto.lib']
             }]
         ]
     }]
