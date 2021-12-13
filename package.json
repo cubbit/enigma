@@ -42,24 +42,24 @@
   },
   "homepage": "https://github.com/cubbit/enigma#readme",
   "dependencies": {
-    "@cubbit/web-file-stream": "^1.0.0",
-    "base-x": "^3.0.8",
+    "@cubbit/web-file-stream": "^1.0.1",
+    "base-x": "^3.0.9",
     "bindings": "^1.4.0",
     "fs-extra": "^9.0.1",
     "js-x25519": "git+https://github.com/CryptoEsel/js-x25519.git",
     "node-addon-api": "^3.0.2",
     "pem-jwk": "^2.0.0",
-    "tar": "^6.1.9"
+    "tar": "^6.1.11"
   },
   "devDependencies": {
-    "@types/fs-extra": "^9.0.2",
+    "@types/fs-extra": "^9.0.13",
     "@types/jest": "^26.0.14",
     "@types/node": "^14.11.8",
-    "@types/pem-jwk": "^1.5.0",
+    "@types/pem-jwk": "^1.5.1",
     "@types/sinon": "^9.0.8",
-    "aws-sdk": "^2.814.0",
+    "aws-sdk": "^2.1046.0",
     "concurrently": "^6.4.0",
-    "glob": "^7.1.6",
+    "glob": "^7.2.0",
     "jest": "^26.5.3",
     "rimraf": "^3.0.2",
     "sinon": "^9.2.0",
@@ -67,6 +67,6 @@
     "ts-node": "^9.0.0",
     "tslint": "^6.1.3",
     "typedoc": "^0.22.10",
-    "typescript": "^4.0.3"
+    "typescript": "^4.5.3"
   }
 }
