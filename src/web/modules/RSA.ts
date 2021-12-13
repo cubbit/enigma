@@ -69,6 +69,12 @@ export class RSA
             hash: {name: 'SHA-256'},
         }, true, ['encrypt', 'decrypt']);
 
+        if(!rsa.publicKey)
+            throw new Error('Failed to generate RSA public key');
+
+        if(!rsa.privateKey)
+            throw new Error('Failed to generate RSA private key');
+
         const public_key = Buffer.from(jwk2pem(await self.crypto.subtle.exportKey('jwk', rsa.publicKey) as RSA_JWK), 'utf8');
         const private_key = Buffer.from(jwk2pem(await self.crypto.subtle.exportKey('jwk', rsa.privateKey) as RSA_JWK), 'utf8');
 
