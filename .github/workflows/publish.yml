@@ -18,6 +18,12 @@ jobs:
       SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Reconfigure git to use HTTPS authentication
+        uses: GuillaumeFalourd/SSH-to-HTTPS@v1
+        with:
+          github_token: ${{ secrets.ACCESS_TOKEN }}
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node }}
