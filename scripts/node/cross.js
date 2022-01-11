@@ -20,10 +20,10 @@ async function cross()
         switch(arch)
         {
             case "arm64":
-                container = 'dockcross/linux-arm64'
+                container = 'dockcross/linux-arm64-lts'
                 break;
             case "arm":
-                container = 'dockcross/linux-armv7'
+                container = 'dockcross/linux-armv7-lts'
                 break;
 
             default:
