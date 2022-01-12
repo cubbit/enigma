@@ -13,7 +13,7 @@
     "lint": "tslint -c tslint.json --project tsconfig.json src/**/*.ts",
     "build": "node-gyp rebuild",
     "cross:arm64": "docker build -t enigma:arm64 -f ./Dockerfile.arm --build-arg TARGET_ARCH=arm64 . && docker run -it --rm -v $(pwd)/build/stage:/module/build/stage enigma:arm64",
-    "cross:arm7": "docker build -t enigma:arm7 -f ./Dockerfile.arm --build-arg TARGET_ARCH=arm7 . && docker run -it --rm -v $(pwd)/build/stage:/module/build/stage enigma:arm7",
+    "cross:armv7": "docker build -t enigma:armv7 -f ./Dockerfile.arm --build-arg TARGET_ARCH=armv7 . && docker run -it --rm -v $(pwd)/build/stage:/module/build/stage enigma:armv7",
     "cross": "npm run cross:arm64 && npm run cross:arm7",
     "binary:pack": "node -e \"require('./scripts/node/binary.js').pack()\"",
     "binary:publish": "node -e \"require('./scripts/node/binary.js').publish()\"",
