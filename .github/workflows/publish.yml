@@ -34,13 +34,13 @@ jobs:
           npm run test
       - name: Publish
         id: publish
-        if: matrix.node == 12
+        if: matrix.node == 14
         run: |
           npm run binary:pack
           npm run binary:publish
       - name: Publish linux ARM
         id: publish_linux_arm
-        if: matrix.os == 'ubuntu-18.04' && matrix.node == 12
+        if: matrix.os == 'ubuntu-18.04' && matrix.node == 14
         run: |
           TARGET_ARCH=arm npm run cross
           TARGET_ARCH=arm npm run binary:publish
