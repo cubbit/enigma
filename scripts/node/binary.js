@@ -18,7 +18,7 @@ const stage_path = path.resolve(module_path, 'build', 'stage');
 
 function _archive()
 {
-    const platform = os.platform();
+    const platform = process.env.TARGET_PLATFORM || os.platform();
     const arch = process.env.TARGET_ARCH || os.arch();
     const runtime = process.env.TARGET_RUNTIME || 'node';
     const filename = `${runtime}-${platform}-${arch}.tar.gz`;
@@ -34,6 +34,8 @@ async function pack()
     console.log('Packing native node...');
 
     const tarball = _archive();
+
+    console.log('Creating archive:', tarball);
 
     fs.ensureDirSync(path.dirname(tarball));
 
