@@ -1,0 +1,7 @@
+.git
+Dockerfile.*
+build
+coverage
+dependencies
+dist
+node_modules
