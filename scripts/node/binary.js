@@ -19,8 +19,12 @@ const stage_path = path.resolve(module_path, 'build', 'stage');
 function _archive()
 {
     const platform = process.env.TARGET_PLATFORM || os.platform();
-    const arch = process.env.TARGET_ARCH || os.arch();
+    let arch = process.env.TARGET_ARCH || os.arch();
     const runtime = process.env.TARGET_RUNTIME || 'node';
+
+    if(arch === 'armv7')
+        arch = 'arm';
+
     const filename = `${runtime}-${platform}-${arch}.tar.gz`;
 
     const tarball_path = path.resolve(stage_path, package_version, arch)
