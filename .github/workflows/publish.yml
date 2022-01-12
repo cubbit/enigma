@@ -42,6 +42,7 @@ jobs:
         id: publish_linux_arm
         if: matrix.os == 'ubuntu-18.04' && matrix.node == 14
         run: |
-          npm run cross
-          TARGET_ARCH=arm npm run binary:publish
+          npm run cross:arm64
           TARGET_ARCH=arm64 npm run binary:publish
+          npm run cross:armv7
+          TARGET_ARCH=arm npm run binary:publish
