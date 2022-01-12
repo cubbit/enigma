@@ -61,6 +61,7 @@ const macos_deployment_version = '11';
                     env.OPENSSL_COMPILER = 'linux-x86_64';
                     break;
                 case 'arm':
+                case 'armv7':
                     env.OPENSSL_COMPILER = 'linux-generic32';
                     break;
                 case 'arm64':
