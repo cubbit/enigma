@@ -6,6 +6,9 @@ on:
       - "**"
       - "!master"
 
+env:
+  ENIGMA_FORCE_BUILD: "True"
+
 jobs:
   test:
     runs-on: ${{ matrix.os }}

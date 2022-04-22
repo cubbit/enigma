@@ -5,6 +5,9 @@ on:
     branches:
       - master
 
+env:
+  ENIGMA_FORCE_BUILD: "True"
+
 jobs:
   test_and_publish:
     runs-on: ${{ matrix.os }}

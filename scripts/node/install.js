@@ -28,7 +28,7 @@ function install()
 {
     return new Promise((resolve, reject) =>
     {
-        if(process.env.CI)
+        if(process.env.ENIGMA_FORCE_BUILD)
         {
             if(_build())
                 return resolve();
