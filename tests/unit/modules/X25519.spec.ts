@@ -1,7 +1,7 @@
 import Enigma from '../../../src';
 
 // tslint:disable-next-line:no-var-requires
-const X25519_key_exchange = require('js-x25519');
+const X25519_key_exchange = require('../../../src/common/x25519.js');
 
 describe('X25519', () =>
 {

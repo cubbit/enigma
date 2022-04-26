@@ -2,7 +2,7 @@ import {ED25519} from './ED25519';
 import {AES} from './AES';
 
 // tslint:disable-next-line:no-var-requires
-const X25519_key_exchange = require('js-x25519');
+const X25519_key_exchange = require('../../common/x25519.js');
 
 export declare namespace X25519
 {
