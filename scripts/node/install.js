@@ -74,4 +74,30 @@ function install()
     });
 }
 
-module.exports = {install};
+function source()
+{
+    return new Promise((resolve, reject) =>
+    {
+        const url = `https://raw.githubusercontent.com/CryptoEsel/js-x25519/master/lib/x25519.js.min.js`;
+
+        https.get(url, (response) =>
+        {
+            if(response.statusCode === 200)
+            {
+                const common_path = path.resolve(module_path, 'src', 'common');
+                const file = path.resolve(common_path, 'x25519.js');
+                fs.ensureDirSync(common_path);
+
+                const stream = fs.createWriteStream(file)
+                stream.on('close', resolve);
+                stream.on('error', reject);
+
+                response.pipe(stream);
+            }
+            else
+                throw new Error('Cannot download source dependencies');
+        });
+    });
+}
+
+module.exports = {install, source};

@@ -1,6 +1,6 @@
 {
   "name": "@cubbit/enigma",
-  "version": "1.2.3",
+  "version": "1.3.0",
   "private": true,
   "description": "A fast, native, cryptographic engine for the web",
   "main": "index.js",
@@ -10,6 +10,7 @@
   },
   "scripts": {
     "install": "node -e \"require('./scripts/node/install.js').install()\"",
+    "postinstall": "node -e \"require('./scripts/node/install.js').source()\"",
     "lint": "tslint -c tslint.json --project tsconfig.json src/**/*.ts",
     "build": "node-gyp rebuild",
     "cross:arm64": "docker build -t enigma:arm64 -f ./Dockerfile.arm --build-arg TARGET_ARCH=arm64 . && docker run --rm -v $(pwd)/build/stage:/module/build/stage enigma:arm64",
@@ -48,7 +49,6 @@
     "base-x": "^3.0.9",
     "bindings": "^1.4.0",
     "fs-extra": "^9.0.1",
-    "js-x25519": "git+https://github.com/CryptoEsel/js-x25519.git",
     "node-addon-api": "^3.0.2",
     "pem-jwk": "^2.0.0",
     "tar": "^6.1.11"
