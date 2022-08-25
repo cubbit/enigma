@@ -37,10 +37,7 @@ function install()
 
         const platform = os.platform();
         const arch = os.arch();
-        let runtime = process.env.npm_config_runtime === "electron" && platform === 'win32' ? 'electron' : 'node';
-        if(runtime === 'electron')
-            runtime = `${runtime}-${process.env.npm_config_target.split('.').slice(0, 2).join('.')}`
-        const filename = `${runtime}-${platform}-${arch}.tar.gz`;
+        const filename = `node-${platform}-${arch}.tar.gz`;
         const url = `https://s3.eu-central-1.amazonaws.com/cubbit/${module_name}/${package_version}/${filename}`;
 
         https.get(url, (response) =>
