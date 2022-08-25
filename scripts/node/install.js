@@ -18,6 +18,12 @@ const stage_path = path.resolve(module_path, 'build', 'stage');
 
 function _build()
 {
+    if(process.env.ENIGMA_SKIP_BUILD)
+    {
+        console.warn('Build is skipped. The module could not work as expected');
+        return true;            
+    }
+
     const result = child_process.spawnSync('npm', ['run', 'build'], {shell: true, stdio: 'inherit', cwd: module_path});
     if(result.status)
         return false;

@@ -5,47 +5,54 @@ on:
     branches:
       - master
 
-env:
-  ENIGMA_FORCE_BUILD: "True"
-
 jobs:
-  test_and_publish:
+  publish-bindings:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
       matrix:
         os: [ubuntu-18.04, macos-10.15, windows-2019]
-        node: [12, 14]
     env:
+      ENIGMA_FORCE_BUILD: "True"
       ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
       SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          persist-credentials: false
-      - name: Reconfigure git to use HTTPS authentication
-        uses: GuillaumeFalourd/SSH-to-HTTPS@v1
-        with:
-          github_token: ${{ secrets.ACCESS_TOKEN }}
-      - uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node }}
+          node-version: 16
       - name: Install dependencies
         run: npm ci
-      - name: Run tests
-        id: run_tests
-        run: npm run test
-      - name: Publish
-        id: publish
-        if: matrix.node == 14
+      - name: Publish bindings
         run: |
           npm run binary:pack
           npm run binary:publish
       - name: Publish linux ARM
-        id: publish_linux_arm
-        if: matrix.os == 'ubuntu-18.04' && matrix.node == 14
+        if: matrix.os == 'ubuntu-18.04'
+        run: |
+          npm run cross:armv7
+          TARGET_ARCH=arm npm run binary:publish
+      - name: Publish linux ARM64
+        if: matrix.os == 'ubuntu-18.04'
         run: |
           npm run cross:arm64
           TARGET_ARCH=arm64 npm run binary:publish
-          npm run cross:armv7
-          TARGET_ARCH=arm npm run binary:publish
+
+  publish-npm:
+    needs: publish-bindings
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: true
+    env:
+      ENIGMA_SKIP_BUILD: "True"
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: npm ci
+      - name: Publish NPM
+        run: npm run publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
