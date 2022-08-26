@@ -42,12 +42,12 @@ jobs:
           npm run binary:pack
           npm run binary:publish
       - name: Publish linux ARM
-        if: matrix.os == 'ubuntu-18.04'
+        if: runner.os == 'Linux'
         run: |
           npm run cross:armv7
           TARGET_ARCH=arm npm run binary:publish
       - name: Publish linux ARM64
-        if: matrix.os == 'ubuntu-18.04'
+        if: runner.os == 'Linux'
         run: |
           npm run cross:arm64
           TARGET_ARCH=arm64 npm run binary:publish
