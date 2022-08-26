@@ -6,7 +6,21 @@ on:
       - master
 
 jobs:
+  check-existing:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - uses: flood-io/is-published-on-npm@v1
+        id: is-published
+      - name:
+        if: ${{ steps.is-published.outputs.published == 'true' }}
+        run: exit 1
+
   publish-bindings:
+    needs: check-existing
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
@@ -41,8 +55,6 @@ jobs:
   publish-npm:
     needs: publish-bindings
     runs-on: ubuntu-18.04
-    strategy:
-      fail-fast: true
     env:
       ENIGMA_SKIP_BUILD: "True"
     steps:
