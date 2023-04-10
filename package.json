@@ -59,7 +59,7 @@
     "@types/node": "^14.11.8",
     "@types/pem-jwk": "^1.5.1",
     "@types/sinon": "^9.0.8",
-    "aws-sdk": "^2.1046.0",
+    "aws-sdk": "^2.1354.0",
     "concurrently": "^6.4.0",
     "glob": "^7.2.0",
     "jest": "^26.5.3",
